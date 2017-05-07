@@ -1,4 +1,4 @@
-# SiddhiPythonAPI
+# Siddhi CEP Python API
 Goals
 -----
 1) Develop a Python Wrapper on Siddhi Java Library (https://github.com/wso2/siddhi).
