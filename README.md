@@ -15,6 +15,17 @@ Currently, the project is in very early stage with discussions on the scope.
 - [x] Wrapping basic features of Siddhi CEP Core 3.1 and 4.0
 - [ ] Wrapping Siddhi Debugger
 
+Running the Tests
+-----
+1. Install following pre-requisites
+    - Python 2.7.x or 3.x
+    - Cython (`sudo apt-get install cython`)
+    - Pyjnius (`sudo pip install pyjnius`)
+    - Maven
+2. Compile Java Libraries
+    - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP3/ProxyClasses/SiddhiCEP3Proxy` and run `mvn install`
+    - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy` and run `mvn install`
+    - Run the tests cases in `SiddhiCEPPythonAPI/Tests` directory
 
 Background
 -----
