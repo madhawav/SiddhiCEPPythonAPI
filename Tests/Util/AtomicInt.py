@@ -19,6 +19,6 @@ class AtomicInt:
             self.value += value
             return self.value
 
-    def get(self, value):
+    def get(self):
         with self.lock:
             return self.value
