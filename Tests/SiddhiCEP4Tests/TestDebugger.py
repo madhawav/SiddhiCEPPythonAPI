@@ -41,12 +41,13 @@ class TestDebugger(TestCase):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl())
+        _stream_callback = StreamCallbackImpl()
+        executionPlanRuntime.addCallback("OutputStream", _stream_callback)
 
         inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
 
-        #siddhiDebugger = executionPlanRuntime.debug()
-        #siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
+        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName,queryTerminal, debugger):
@@ -73,50 +74,16 @@ class TestDebugger(TestCase):
                 debugger.next()
 
 
-        #siddhiDebugger.setDebuggerCallback(SiddhiDebuggerCallbackImpl())
+        _debugger_callback = SiddhiDebuggerCallbackImpl()
+        siddhiDebugger.setDebuggerCallback(_debugger_callback)
 
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
-        inputHandler.send(["WSO2", 50.0, 60])
-        inputHandler.send(["WSO2", 70.0, 40])
         inputHandler.send(["WSO2", 50.0, 60])
         inputHandler.send(["WSO2", 70.0, 40])
 
         sleep(1)
 
-        _self_shaddow.assertEquals(36, _self_shaddow.inEventCount.get(), "Invalid number of output events")
-
-        #_self_shaddow.assertEquals(4, _self_shaddow.debugEventCount.get(),"Invalid number of debug events")
+        _self_shaddow.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
+        _self_shaddow.assertEquals(4, _self_shaddow.debugEventCount.get(),"Invalid number of debug events")
 
         executionPlanRuntime.shutdown()
 if __name__ == '__main__':

@@ -27,7 +27,8 @@ class QueryCallback(metaclass=ABCMeta):
                 #_lock.acquire()
                 query_callback_self.receive(timestamp,inEvents,outEvents)
                 #_lock.release()
-        self._query_callback_proxy_inst.setReceiveCallback(ReceiveCallback())
+        self._receive_callback_ref = ReceiveCallback()
+        self._query_callback_proxy_inst.setReceiveCallback(self._receive_callback_ref)
     @abstractmethod
     def receive(self, timestamp, inEvents, outEvents):
         pass

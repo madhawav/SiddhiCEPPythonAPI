@@ -57,7 +57,8 @@ class BasicTests(unittest.TestCase):
                 global hitCount
                 hitCount -= 1
 
-        self.executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
+        _concrete_query_callback = ConcreteQueryCallback()
+        self.executionPlanRuntime.addCallback("query1", _concrete_query_callback)
 
         # Retrieving input handler to push events into Siddhi
         inputHandler = self.executionPlanRuntime.getInputHandler("cseEventStream")

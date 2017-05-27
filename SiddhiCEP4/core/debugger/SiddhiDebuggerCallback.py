@@ -36,7 +36,8 @@ class SiddhiDebuggerCallback(metaclass=ABCMeta):
                 _siddhi_debugger_callback_self.debugEvent(complexEvent, queryName, SiddhiDebugger.QueryTerminal(qt_value), SiddhiDebugger._fromSiddhiDebuggerProxy(debugger))
                 #_lock.release()
 
-        self._siddhi_debugger_callback_proxy_inst.setDebugEventCallback(SiddhiDebuggerCallbackProxy())
+        self._siddhi_debugger_callback_proxy_ref = SiddhiDebuggerCallbackProxy()
+        self._siddhi_debugger_callback_proxy_inst.setDebugEventCallback(self._siddhi_debugger_callback_proxy_ref)
     @abstractmethod
     def debugEvent(self, complexEvent, queryName, queryTerminal, debugger):
         pass

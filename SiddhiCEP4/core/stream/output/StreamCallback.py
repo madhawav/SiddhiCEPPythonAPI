@@ -29,10 +29,11 @@ class StreamCallback(metaclass=ABCMeta):
 
             @java_method(signature='([Lorg/wso2/siddhi/core/event/Event;)V', name="receive")
             def receive(self, events):
-                _lock.acquire()
+                #_lock.acquire()
                 stream_callback_self.receive(events)
-                _lock.release()
-        self._stream_callback_proxy.setReceiveCallback(ReceiveCallback())
+                #_lock.release()
+        self._receive_callback_ref = ReceiveCallback()
+        self._stream_callback_proxy.setReceiveCallback(self._receive_callback_ref)
     @abstractmethod
     def receive(self, events):
         pass

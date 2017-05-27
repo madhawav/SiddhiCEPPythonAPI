@@ -43,21 +43,22 @@ class TestDebugger:
         class StreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 print("Receive callback")
-                _self_shaddow.inEventCount.addAndGet(len(events))
+                #_self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl())
+        stream_callback = StreamCallbackImpl()
+        executionPlanRuntime.addCallback("OutputStream", stream_callback)
 
         inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
 
-        #siddhiDebugger = executionPlanRuntime.debug()
-        #siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
+        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName,queryTerminal, debugger):
-                # log.info("Query: " + queryName + ":" + queryTerminal.name)
-                # log.info(event)
-                #
-                # count = _self_shaddow.debugEventCount.addAndGet(_self_shaddow.getCount(event))
+                log.info("Query: " + queryName + ":" + queryTerminal.name)
+                log.info(event)
+
+                count = _self_shaddow.debugEventCount.addAndGet(_self_shaddow.getCount(event))
                 # if count == 1:
                 #     _self_shaddow.assertEquals("query 1IN", queryName + queryTerminal.name,"Incorrect break point")
                 #     _self_shaddow.assertListEqual(["WSO2", 50.0, 60],event.getOutputData(),"Incorrect debug event received at IN")
@@ -77,9 +78,49 @@ class TestDebugger:
                 debugger.next()
                 print("After debug")
 
+        debug_callback = SiddhiDebuggerCallbackImpl()
+        siddhiDebugger.setDebuggerCallback(debug_callback)
 
-        #siddhiDebugger.setDebuggerCallback(SiddhiDebuggerCallbackImpl())
-
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
+        inputHandler.send(["WSO2", 50.0, 60])
+        print("After input")
+        inputHandler.send(["WSO2", 70.0, 40])
+        print("After input")
         inputHandler.send(["WSO2", 50.0, 60])
         print("After input")
         inputHandler.send(["WSO2", 70.0, 40])
