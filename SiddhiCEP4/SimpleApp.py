@@ -4,6 +4,7 @@ from time import sleep
 
 from SiddhiCEP4.DataTypes.LongType import LongType
 from SiddhiCEP4.core.SiddhiManager import SiddhiManager
+from SiddhiCEP4.core.debugger.SiddhiDebugger import SiddhiDebugger
 from SiddhiCEP4.core.query.output.callback.QueryCallback import QueryCallback
 from SiddhiCEP4.core.util.EventPrinter import PrintEvent
 

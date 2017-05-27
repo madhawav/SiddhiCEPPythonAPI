@@ -1,3 +1,5 @@
+from multiprocessing import RLock
+
 import SiddhiCEP4.core
 
 from abc import ABCMeta, abstractmethod
@@ -7,6 +9,7 @@ from jnius import autoclass, java_method, PythonJavaClass
 
 _stream_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy")
 
+_lock = RLock()
 class StreamCallback(metaclass=ABCMeta):
     '''
     StreamCallback is used to receive events from StreamJunction
@@ -29,7 +32,8 @@ class StreamCallback(metaclass=ABCMeta):
                 #_lock.acquire()
                 stream_callback_self.receive(events)
                 #_lock.release()
-        self._stream_callback_proxy.setReceiveCallback(ReceiveCallback())
+        self._receive_callback_ref = ReceiveCallback()
+        self._stream_callback_proxy.setReceiveCallback(self._receive_callback_ref)
     @abstractmethod
     def receive(self, events):
         pass

@@ -1,4 +1,4 @@
-from multiprocessing import Lock
+from multiprocessing import RLock
 
 
 class AtomicInt:
@@ -8,17 +8,22 @@ class AtomicInt:
 
     def __init__(self, value=0):
         self.value = value
-        self.lock = Lock()
+        self.lock = RLock()
 
     def set(self, value):
-        with self.lock:
-            self.value = value
+        self.lock.acquire()
+        self.value = value
+        self.lock.release()
 
     def addAndGet(self, value):
-        with self.lock:
-            self.value += value
-            return self.value
+        self.lock.acquire()
+        self.value += value
+        val = self.value
+        self.lock.release()
+        return val
+    def get(self):
+        self.lock.acquire()
+        val = self.value
+        self.lock.release()
+        return val
 
-    def get(self, value):
-        with self.lock:
-            return self.value

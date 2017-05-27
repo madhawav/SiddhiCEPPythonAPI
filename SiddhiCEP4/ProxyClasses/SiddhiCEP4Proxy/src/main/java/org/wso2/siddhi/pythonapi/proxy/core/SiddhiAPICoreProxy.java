@@ -33,6 +33,5 @@ public class SiddhiAPICoreProxy {
     {
         executionPlanRuntime.addCallback(name, streamCallbackProxy);
 
-
     }
 }

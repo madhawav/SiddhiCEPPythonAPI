@@ -28,13 +28,28 @@ class BasicTests(unittest.TestCase):
         inputHandler.send(["GOOG", 50, LongType(30)])
         inputHandler.send(["IBM", 76.6, LongType(400)])
         inputHandler.send(["WSO2", 45.6, LongType(50)])
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
 
     def test_execution_plan_runtime_callback(self):
         # Adding callback to retrieve output events from query
         lock = Lock()
 
         global hitCount
-        hitCount = 3
+        hitCount = 18
 
         class ConcreteQueryCallback(QueryCallback):
             def receive(self, timestamp, inEvents, outEvents):
@@ -42,7 +57,8 @@ class BasicTests(unittest.TestCase):
                 global hitCount
                 hitCount -= 1
 
-        self.executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
+        _concrete_query_callback = ConcreteQueryCallback()
+        self.executionPlanRuntime.addCallback("query1", _concrete_query_callback)
 
         # Retrieving input handler to push events into Siddhi
         inputHandler = self.executionPlanRuntime.getInputHandler("cseEventStream")
@@ -50,6 +66,31 @@ class BasicTests(unittest.TestCase):
         self.executionPlanRuntime.start()
 
         # Sending events to Siddhi
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["GOOG", 50, LongType(30)])
+        inputHandler.send(["IBM", 76.6, LongType(400)])
+        inputHandler.send(["WSO2", 45.6, LongType(50)])
         inputHandler.send(["IBM", 700.0, LongType(100)])
         inputHandler.send(["WSO2", 60.5, LongType(200)])
         inputHandler.send(["GOOG", 50, LongType(30)])
