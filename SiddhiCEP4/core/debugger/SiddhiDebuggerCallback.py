@@ -1,7 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
 import SiddhiCEP4.core
-import SiddhiCEP4.core.debugger.SiddhiDebugger
 
 from jnius import autoclass, PythonJavaClass, java_method
 

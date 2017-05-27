@@ -43,15 +43,14 @@ class TestDebugger:
         class StreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 print("Receive callback")
-                with l:
-                    _self_shaddow.inEventCount.addAndGet(1)
+                _self_shaddow.inEventCount.addAndGet(len(events))
 
         executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl())
 
         inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
-        siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
+        #siddhiDebugger = executionPlanRuntime.debug()
+        #siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName,queryTerminal, debugger):
@@ -79,7 +78,7 @@ class TestDebugger:
                 print("After debug")
 
 
-        siddhiDebugger.setDebuggerCallback(SiddhiDebuggerCallbackImpl())
+        #siddhiDebugger.setDebuggerCallback(SiddhiDebuggerCallbackImpl())
 
         inputHandler.send(["WSO2", 50.0, 60])
         print("After input")
@@ -93,4 +92,5 @@ class TestDebugger:
         executionPlanRuntime.shutdown()
 
 td = TestDebugger()
+td.setUp()
 td.test_Debugger1()
