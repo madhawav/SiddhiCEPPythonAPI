@@ -1,10 +1,11 @@
 import unittest
 import logging
+from distutils import log
 from time import sleep
 from unittest.case import TestCase
 
-from SiddhiCEP4.core.SiddhiManager import SiddhiManager
-from SiddhiCEP4.core.stream.output.StreamCallback import StreamCallback
+from SiddhiCEP3.core.SiddhiManager import SiddhiManager
+from SiddhiCEP3.core.stream.output.StreamCallback import StreamCallback
 from Tests.Util.AtomicInt import AtomicInt
 
 

@@ -2,7 +2,7 @@ from multiprocessing import RLock
 
 import logging
 
-import SiddhiCEP4.core
+import SiddhiCEP3.core
 
 from abc import ABCMeta, abstractmethod
 
@@ -21,7 +21,6 @@ class StreamCallback(metaclass=ABCMeta):
     This class should be extended if one intends to get events from a Siddhi Stream.
     '''
     __metaclass__ = ABCMeta
-
 
 
     def __init__(self):

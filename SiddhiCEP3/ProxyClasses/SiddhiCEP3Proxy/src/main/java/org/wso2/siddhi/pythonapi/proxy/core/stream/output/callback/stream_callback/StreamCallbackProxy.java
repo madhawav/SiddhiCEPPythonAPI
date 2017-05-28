@@ -20,7 +20,7 @@ public class StreamCallbackProxy extends StreamCallback {
     }
 
     @Override
-    public void finalize() throws java.lang.Throwable {
+    public void finalize() throws Throwable {
         //We need to inform Python when Java GC collects so it can remove the references held
         log.info("Java GC Collection");
         this.receiveCallback.gc();

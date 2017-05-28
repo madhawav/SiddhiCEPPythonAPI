@@ -7,4 +7,6 @@ import org.wso2.siddhi.core.event.Event;
  */
 public interface ReceiveCallbackProxy {
     void receive(long l, Event[] events, Event[] events1);
+    void gc();
+
 }

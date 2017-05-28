@@ -36,6 +36,10 @@ class SiddhiDebugger:
         self.siddhi_debugger_proxy.acquireBreakPoint(queryName,queryTerminal.value)
 
     def setDebuggerCallback(self, siddhi_debugger_callback):
+        if siddhi_debugger_callback is None:
+            self.siddhi_debugger_proxy.setDebuggerCallback(None)
+            return
+
         self.siddhi_debugger_proxy.setDebuggerCallback(siddhi_debugger_callback._siddhi_debugger_callback_proxy_inst)
 
     def next(self):

@@ -73,7 +73,6 @@ public class SiddhiTest {
     }
     public static void main(String[] args) {
 
-
        new SiddhiTest().doTest();
     }
 }

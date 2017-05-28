@@ -9,4 +9,5 @@ import org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTermin
  */
 public interface DebugEventCallbackProxy {
     void debugEvent(ComplexEvent complexEvent, String queryName, QueryTerminalProxy queryTerminal, SiddhiDebugger debugger);
+    void gc();
 }
