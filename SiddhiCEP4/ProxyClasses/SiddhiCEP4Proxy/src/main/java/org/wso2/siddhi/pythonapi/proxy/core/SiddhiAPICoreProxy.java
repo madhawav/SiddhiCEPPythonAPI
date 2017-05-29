@@ -9,6 +9,7 @@ import org.wso2.siddhi.core.query.output.callback.QueryCallback;
 import org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.QueryCallbackProxy;
 import org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.ReceiveCallbackProxy;
 import org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy;
+import org.wso2.siddhi.pythonapi.threadfix.PyThreadFix;
 
 /**
  * Created by madhawa on 5/21/17.
@@ -19,6 +20,7 @@ public class SiddhiAPICoreProxy {
      * @return new SiddhiManager Instance
      */
     public SiddhiManager initSiddhiManager(){
+        //new PyThreadFix().fix();
         return new SiddhiManager();
     }
 

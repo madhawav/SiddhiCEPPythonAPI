@@ -16,7 +16,7 @@ public class StreamCallbackProxy extends StreamCallback {
 
     public void receive(Event[] events) {
         this.receiveCallback.receive(events);
-        log.info("Event Received - Java");
+        //log.info("Event Received - Java");
     }
 
     @Override

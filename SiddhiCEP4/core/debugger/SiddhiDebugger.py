@@ -42,6 +42,13 @@ class SiddhiDebugger:
 
         self.siddhi_debugger_proxy.setDebuggerCallback(siddhi_debugger_callback._siddhi_debugger_callback_proxy_inst)
 
+    def play(self):
+        '''
+        Release the current lock and wait for the next event arrive to the same break point.
+        :return: 
+        '''
+        self.siddhi_debugger_proxy.play()
+
     def next(self):
         '''
         Release the current lock and wait for the events arrive to the next point. For this to work, the next endpoint

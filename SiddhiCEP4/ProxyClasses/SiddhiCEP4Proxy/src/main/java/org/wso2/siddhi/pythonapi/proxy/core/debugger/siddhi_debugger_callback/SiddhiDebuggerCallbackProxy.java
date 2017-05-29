@@ -8,6 +8,8 @@ import org.wso2.siddhi.core.event.Event;
 import org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy;
 import org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.ReceiveCallbackProxy;
 import org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy;
+import org.wso2.siddhi.pythonapi.threadfix.PyThreadFix;
+
 
 /**
  * Created by madhawa on 5/27/17.
@@ -21,6 +23,7 @@ public class SiddhiDebuggerCallbackProxy implements SiddhiDebuggerCallback {
     private static final Logger log = Logger.getLogger(StreamCallbackProxy.class);
 
     public void debugEvent(ComplexEvent complexEvent, String queryName, SiddhiDebugger.QueryTerminal queryTerminal, SiddhiDebugger siddhiDebugger) {
+        new PyThreadFix().fix();
         this.debugEventCallback.debugEvent(complexEvent,queryName,new QueryTerminalProxy(queryTerminal), siddhiDebugger);
     }
 

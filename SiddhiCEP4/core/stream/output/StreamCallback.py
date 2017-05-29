@@ -37,6 +37,7 @@ class StreamCallback(metaclass=ABCMeta):
             @java_method(signature='([Lorg/wso2/siddhi/core/event/Event;)V', name="receive")
             def receive(self, events):
                 #_lock.acquire()
+                logging.info("Received")
                 stream_callback_self.receive(events)
                 #_lock.release()
 
