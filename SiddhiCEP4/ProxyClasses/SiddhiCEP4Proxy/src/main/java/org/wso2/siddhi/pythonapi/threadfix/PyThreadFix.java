@@ -5,6 +5,8 @@
 
 package org.wso2.siddhi.pythonapi.threadfix;
 
+import org.wso2.siddhi.pythonapi.proxy.core.SiddhiAPICoreProxy;
+
 public class PyThreadFix {
     static {
         System.out.println(System.getProperty("java.library.path"));
@@ -18,7 +20,8 @@ public class PyThreadFix {
     private native void fixThread();
 
     public void fix(){
-        fixThread();
+        if(SiddhiAPICoreProxy.getPythonVersionMajor() == 3 && SiddhiAPICoreProxy.getPythonVersionMinor() >= 4)
+            fixThread();
     }
     // Test Driver
     public static void main(String[] args) {
