@@ -12,6 +12,7 @@ from SiddhiCEP4.core.debugger.SiddhiDebuggerCallback import SiddhiDebuggerCallba
 from SiddhiCEP4.core.stream.output.StreamCallback import StreamCallback
 from Tests.Util.AtomicInt import AtomicInt
 
+import threading
 
 class TestDebugger(TestCase):
     def setUp(self):
@@ -487,8 +488,6 @@ class TestDebugger(TestCase):
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
-        current_milli_time = lambda: int(round(time.time() * 1000))
-
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
 
@@ -515,6 +514,70 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.inEventCount.get(),"Invalid number of output events")
         self.assertEquals(3, self.debugEventCount.get(),"Invalid number of debug events")
 
+
+        executionPlanRuntime.shutdown()
+        siddhiManager.shutdown()
+
+    def test_debugger9(self):
+        logging.info("Siddi Debugger Test 9: Test state traversal in a simple query")
+
+        siddhiManager = SiddhiManager()
+
+        cseEventStream = "@config(async = 'true') define stream cseEventStream (symbol string, price float, " + \
+                    "volume int);"
+        query = "@info(name = 'query1')" + \
+                "from cseEventStream#window.length(3) " + \
+                "select symbol, price, sum(volume) as volume " + \
+                "insert into OutputStream; "
+
+        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+
+        _self_shaddow = self
+
+        class OutputStreamCallbackImpl(StreamCallback):
+            def receive(self, events):
+                _self_shaddow.inEventCount.addAndGet(len(events))
+
+        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+
+        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+
+        siddhiDebugger = executionPlanRuntime.debug()
+
+        siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
+
+        class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
+            def debugEvent(self, event, queryName, queryTerminal, debugger):
+                log.info("Query: " + queryName + ":" + queryTerminal.name)
+                log.info(event)
+
+                count = _self_shaddow.debugEventCount.addAndGet(_self_shaddow.getCount(event))
+
+                if count == 2:
+                    queryState = debugger.getQueryState(queryName)
+                    log.info(queryState)
+
+                    streamEvent = None
+                    # Order of the query state items is unpredictable
+                    for (k,v) in queryState.items():
+                        if k.startswith("AbstractStreamProcessor"):
+                            streamEvent = v["ExpiredEventChunk"]
+                            break
+
+                    _self_shaddow.assertListEqual(streamEvent.getOutputData(),["WSO2", 50.0, None])
+
+
+                debugger.next()
+
+        siddhiDebugger.setDebuggerCallback(SiddhiDebuggerCallbackImpl())
+
+        inputHandler.send(["WSO2", 50.0, 60])
+        inputHandler.send(["WSO2", 70.0, 40])
+
+        sleep(1)
+
+        self.assertEquals(2, self.inEventCount.get(), "Invalid number of output events")
+        self.assertEquals(4, self.debugEventCount.get(), "Invalid number of debug events")
 
         executionPlanRuntime.shutdown()
         siddhiManager.shutdown()
@@ -553,8 +616,6 @@ class TestDebugger(TestCase):
         siddhiDebugger = executionPlanRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
-
-        current_milli_time = lambda: int(round(time.time() * 1000))
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
@@ -631,8 +692,6 @@ class TestDebugger(TestCase):
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
-        current_milli_time = lambda: int(round(time.time() * 1000))
-
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
@@ -650,7 +709,8 @@ class TestDebugger(TestCase):
 
                 if count == 2:
                     #Modify the event at the end of the first stream
-                    event.getOutputData()[0] = "IBM"
+                    #TODO Improve the logic to use equal operator
+                    event.setOutputData("IBM",0)
 
                 debugger.next()
 
@@ -668,6 +728,152 @@ class TestDebugger(TestCase):
         executionPlanRuntime.shutdown()
         siddhiManager.shutdown()
 
+    def test_debugger12(self):
+        logging.info("Siddi Debugger Test 12: Test debugging two queries with concurrent input")
+
+        siddhiManager = SiddhiManager()
+
+        cseEventStream = "@config(async = 'true') " + \
+                "define stream cseEventStream (symbol string, price float, volume int); " + \
+                "define stream stockEventStream (symbol string, price float, volume int); "
+
+        query = "@info(name = 'query1')" + \
+                "from cseEventStream " + \
+                "select * " + \
+                "insert into OutputStream1; " + \
+                "@info(name = 'query2')" + \
+                "from stockEventStream " + \
+                "select * " + \
+                "insert into OutputStream2;"
+
+        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+
+        _self_shaddow = self
+        class OutputStreamCallbackImpl1(StreamCallback):
+            def receive(self, events):
+                _self_shaddow.inEventCount.addAndGet(len(events))
+
+        executionPlanRuntime.addCallback("OutputStream1", OutputStreamCallbackImpl1())
+
+        class OutputStreamCallbackImpl2(StreamCallback):
+            def receive(self, events):
+                _self_shaddow.inEventCount.addAndGet(len(events))
+
+        executionPlanRuntime.addCallback("OutputStream2", OutputStreamCallbackImpl2())
+
+        cseEventStreamInputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        stockEventStreamInputHandler = executionPlanRuntime.getInputHandler("stockEventStream")
+
+
+        siddhiDebugger = executionPlanRuntime.debug()
+
+        siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
+        siddhiDebugger.acquireBreakPoint("query2", SiddhiDebugger.QueryTerminal.IN)
+
+        class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
+            def __init__(self):
+                SiddhiDebuggerCallback.__init__(self)
+                self.queryOneResumed = AtomicInt(0)
+            def debugEvent(self, event, queryName, queryTerminal, debugger):
+                log.info("Query: " + queryName + ":" + queryTerminal.name)
+                log.info(event)
+
+                _self_shaddow.debugEventCount.addAndGet(_self_shaddow.getCount(event))
+
+                if ("query1IN" == queryName):
+                    sleep(1)
+                    self.queryOneResumed.set(1)
+
+                    _self_shaddow.assertListEqual(["WSO2", 50.0, 60], event.getOutputData(),"Incorrect debug event received")
+                elif "query2IN" == queryName:
+                    #If query2IN is reached, query1IN must left that break point
+                    _self_shaddow.assertTrue(self.queryOneResumed.get(),"Query 2 thread enterted the checkpoint before query 1 is debugged")
+                    _self_shaddow.assertListEqual(["IBM", 45.0, 80], event.getOutputData(),"Incorrect debug event received")
+                debugger.next()
+
+        siddhiDebugger.setDebuggerCallback(SiddhiDebuggerCallbackImpl())
+
+        def thread1_worker():
+            cseEventStreamInputHandler.send(["WSO2", 50.0, 60])
+        thread1 = threading.Thread(target=thread1_worker)
+        thread1.start()
+
+        def thread2_worker():
+            stockEventStreamInputHandler.send(["IBM", 45.0, 80])
+        thread2 = threading.Thread(target=thread2_worker)
+        thread2.start()
+
+        sleep(2)
+
+        self.assertEquals(2, self.inEventCount.get(),"Invalid number of output events")
+        self.assertEquals(4, self.debugEventCount.get(),"Invalid number of debug events")
+
+
+        executionPlanRuntime.shutdown()
+        siddhiManager.shutdown()
+
+
+    def test_acquire_release_breakpoint(self):
+        #NOTE: This test fails because releaseBreakpoint doesn't seem to work in Java API as of now
+        logging.info("Siddi Debugger Wrapper Test 1: Acquire and Release Break Point")
+
+        siddhiManager = SiddhiManager()
+        cseEventStream = "@config(async = 'true') define stream cseEventStream (symbol string, price float, volume int);"
+
+        query = "@info(name = 'query 1') from cseEventStream select symbol, price, volume insert into OutputStream; "
+
+        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+
+        _self_shaddow = self
+
+        class StreamCallbackImpl(StreamCallback):
+            def receive(self, events):
+                _self_shaddow.inEventCount.addAndGet(len(events))
+
+
+        executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl()) #Causes GC Error
+
+        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+
+        siddhiDebugger = executionPlanRuntime.debug()
+
+        class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
+            def debugEvent(self, event, queryName,queryTerminal, debugger):
+                log.info("Query: " + queryName + ":" + queryTerminal.name)
+                log.info(event)
+
+                count = _self_shaddow.debugEventCount.addAndGet(_self_shaddow.getCount(event))
+                if count == 1:
+                    _self_shaddow.assertEquals("query 1IN", queryName + queryTerminal.name,"Incorrect break point")
+                    _self_shaddow.assertListEqual(["WSO2", 50.0, 60],event.getOutputData(),"Incorrect debug event received at IN")
+                elif count == 2:
+                    _self_shaddow.assertEquals("query 1OUT", queryName + queryTerminal.name,"Incorrect break point")
+                    _self_shaddow.assertListEqual(["WSO2", 50.0, 60],event.getOutputData(),"Incorrect debug event received at IN")
+
+                else:
+                    #No more events should be received
+                    _self_shaddow.fail("The breakpoint has not been released")
+
+                debugger.next()
+
+        siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
+
+        siddhiDebugger.setDebuggerCallback(SiddhiDebuggerCallbackImpl())
+
+        inputHandler.send(["WSO2", 50.0, 60])
+
+        siddhiDebugger.releaseBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
+
+        inputHandler.send(["WSO2", 70.0, 40])
+
+        sleep(0.1)
+
+        self.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
+        self.assertEquals(2, _self_shaddow.debugEventCount.get(),"Invalid number of debug events")
+
+        executionPlanRuntime.shutdown()
+        siddhiManager.shutdown()
+
 
 #t = TestDebugger()
 #t.setUp()
@@ -678,5 +884,6 @@ if __name__ == '__main__':
 
 #TODO: Fix issue with test 4
 #TODO: Add Test 9
-#TODO: Test 11: For this test to pass, should implement write backs
-#TODO: Test 12
+#TODO: Test 11: Improve write-backs
+#TODO: Add a test on ComplexEvent
+#TODO: Wrap Event

@@ -13,7 +13,9 @@ Current Progress
 -----
 Currently, the project is in very early stage with discussions on the scope. 
 - [x] Wrapping basic features of Siddhi CEP Core 3.1 and 4.0
-- [ ] Wrapping Siddhi Debugger
+- [x] Wrapping Siddhi Debugger
+- [ ] Wrapping Events Class
+- [ ] Unit Tests on Siddhi Debugger - Test 4 Not Passing
 
 Running the Tests
 -----
