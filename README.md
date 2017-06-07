@@ -28,8 +28,8 @@ Running the Tests
 2. Compile Java Libraries
     - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP3/ProxyClasses/SiddhiCEP3Proxy` and run `mvn install`
     - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy` and run `mvn install`
-    - Navigate to ``SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP3Proxy/c_code` and run `build.sh`*
-    - Navigate to ``SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy/c_code` and run `build.sh`*
+    - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP3Proxy/c_code` and run `build.sh`*
+    - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy/c_code` and run `build.sh`*
     - Run the tests cases in `SiddhiCEPPythonAPI/Tests` directory
 
 *If build.sh throws errors, check the paths provided for imports of Python3 Developer Headers
