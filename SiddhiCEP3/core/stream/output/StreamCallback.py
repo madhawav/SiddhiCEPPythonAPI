@@ -22,9 +22,7 @@ class StreamCallback(metaclass=ABCMeta):
     '''
     __metaclass__ = ABCMeta
 
-
     def __init__(self):
-
         self._stream_callback_proxy = _stream_callback_proxy()
         stream_callback_self = self
         class ReceiveCallback(PythonJavaClass):
@@ -36,6 +34,7 @@ class StreamCallback(metaclass=ABCMeta):
             @java_method(signature='([Lorg/wso2/siddhi/core/event/Event;)V', name="receive")
             def receive(self, events):
                 #_lock.acquire()
+                logging.info("Received")
                 stream_callback_self.receive(events)
                 #_lock.release()
 

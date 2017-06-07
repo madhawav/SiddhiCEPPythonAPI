@@ -1,4 +1,5 @@
 # Creating SiddhiManager
+import SiddhiCEP3.core
 from threading import Lock, RLock
 from time import sleep
 

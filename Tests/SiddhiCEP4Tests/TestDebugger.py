@@ -223,15 +223,17 @@ class TestDebugger(TestCase):
         query = "@info(name = 'query1')" + \
                 "from cseEventStream#window.timeBatch(1 sec) " + \
                 "select symbol, price, volume " + \
-                "insert into OutputStream; "
+                "insert into OutputStream;"
 
         executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
+                #logging.info("Output Receive")
                 _self_shaddow.inEventCount.addAndGet(len(events))
-                _self_shaddow.assertEquals(1, events.length,"Cannot emit all three in one time")
+                #logging.info("Emitted %d", len(events))
+                _self_shaddow.assertEquals(1, len(events),"Cannot emit all three in one time")
 
         executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
@@ -241,8 +243,6 @@ class TestDebugger(TestCase):
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
-
-
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
                 logging.info(event)
@@ -250,6 +250,7 @@ class TestDebugger(TestCase):
                 count = _self_shaddow.debugEventCount.addAndGet(_self_shaddow.getCount(event))
 
                 if count != 1 and queryTerminal.name == SiddhiDebugger.QueryTerminal.IN.name:
+                    log.info("sleeping")
                     sleep(1.1)
 
                 #next call will not reach OUT since there is a window
@@ -266,10 +267,9 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.inEventCount.get(),"Invalid number of output events")
         self.assertEquals(3, self.debugEventCount.get(),"Invalid number of debug events")
 
-
+        #log.info("Completed")
         executionPlanRuntime.shutdown()
         siddhiManager.shutdown()
-
 
     def test_debugger5(self):
         logging.info("Siddi Debugger Test 5: Test play in a simple query")
@@ -854,7 +854,7 @@ class TestDebugger(TestCase):
                     #No more events should be received
                     _self_shaddow.fail("The breakpoint has not been released")
 
-                debugger.next()
+                debugger.play()
 
         siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -869,7 +869,7 @@ class TestDebugger(TestCase):
         sleep(0.1)
 
         self.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
-        self.assertEquals(2, _self_shaddow.debugEventCount.get(),"Invalid number of debug events")
+        self.assertEquals(1, _self_shaddow.debugEventCount.get(),"Invalid number of debug events")
 
         executionPlanRuntime.shutdown()
         siddhiManager.shutdown()
@@ -883,7 +883,6 @@ if __name__ == '__main__':
     unittest.main()
 
 #TODO: Fix issue with test 4
-#TODO: Add Test 9
 #TODO: Test 11: Improve write-backs
 #TODO: Add a test on ComplexEvent
 #TODO: Wrap Event

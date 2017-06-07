@@ -1,7 +1,9 @@
 from jnius import PythonJavaClass, java_method
 
 from SiddhiCEP3.core import siddhi_api_core_inst
+from SiddhiCEP3.core.query.output.callback.QueryCallback import QueryCallback
 from SiddhiCEP3.core.stream.input.InputHandler import InputHandler
+from SiddhiCEP3.core.stream.output.StreamCallback import StreamCallback
 
 
 class ExecutionPlanRuntime(object):
@@ -20,8 +22,13 @@ class ExecutionPlanRuntime(object):
         :param queryCallback:
         :return:
         '''
-        siddhi_api_core_inst.addExecutionPlanRuntimeCallback(self.execution_plan_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
-
+        if isinstance(queryCallback, QueryCallback):
+            siddhi_api_core_inst.addExecutionPlanRuntimeQueryCallback(self.execution_plan_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
+        elif isinstance(queryCallback, StreamCallback):
+            siddhi_api_core_inst.addExecutionPlanRuntimeStreamCallback(self.execution_plan_runtime_proxy, queryName,
+                                                                 queryCallback._stream_callback_proxy)
+        else:
+            raise NotImplementedError("Unknown type of callback")
     def start(self):
         '''
         Start ExecutionPlanRuntime
@@ -45,7 +52,6 @@ class ExecutionPlanRuntime(object):
         '''
         input_handler_proxy = self.execution_plan_runtime_proxy.getInputHandler(streamId)
         return InputHandler._fromInputHandlerProxy(input_handler_proxy)
-
 
 
     @classmethod

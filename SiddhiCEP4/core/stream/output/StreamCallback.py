@@ -22,10 +22,7 @@ class StreamCallback(metaclass=ABCMeta):
     '''
     __metaclass__ = ABCMeta
 
-
-
     def __init__(self):
-
         self._stream_callback_proxy = _stream_callback_proxy()
         stream_callback_self = self
         class ReceiveCallback(PythonJavaClass):

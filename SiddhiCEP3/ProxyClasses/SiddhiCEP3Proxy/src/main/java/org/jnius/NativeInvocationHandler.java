@@ -1,11 +1,7 @@
 package org.jnius;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-/**
- * Created by madhawa on 5/21/17.
- */
 public class NativeInvocationHandler implements InvocationHandler {
     static boolean DEBUG = false;
     private long ptr;

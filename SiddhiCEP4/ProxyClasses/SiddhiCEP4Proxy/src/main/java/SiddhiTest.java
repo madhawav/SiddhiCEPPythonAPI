@@ -90,6 +90,65 @@ public class SiddhiTest {
         return count;
     }
 
+    public void testDebugger4() throws InterruptedException {
+        log.info("Siddi Debugger Test 4: Test next traversal in a query with time batch window where next call delays" +
+                " 1 sec");
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+
+        String cseEventStream = "define stream cseEventStream (symbol string, price float, volume int);";
+        final String query = "@info(name = 'query1')" +
+                "from cseEventStream#window.timeBatch(1 sec) " +
+                "select symbol, price, volume " +
+                "insert into OutputStream; ";
+
+        ExecutionPlanRuntime executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query);
+
+        executionPlanRuntime.addCallback("OutputStream", new StreamCallback() {
+            @Override
+            public void receive(Event[] events) {
+                inEventCount.addAndGet(events.length);
+                //Assert.assertEquals("Cannot emit all three in one time", 1, events.length);
+            }
+        });
+        InputHandler inputHandler = executionPlanRuntime.getInputHandler("cseEventStream");
+
+        SiddhiDebugger siddhiDebugger = executionPlanRuntime.debug();
+        siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN);
+
+        siddhiDebugger.setDebuggerCallback(new SiddhiDebuggerCallback() {
+            public void debugEvent(ComplexEvent event, String queryName, SiddhiDebugger.QueryTerminal queryTerminal,
+                                   SiddhiDebugger debugger) {
+                log.info(event);
+
+                int count = debugEventCount.addAndGet(getCount(event));
+
+                if (count != 1 && queryTerminal == SiddhiDebugger.QueryTerminal.IN) {
+                    try {
+                        Thread.sleep(1100);
+                    } catch (InterruptedException e) {
+                    }
+                }
+                // next call will not reach OUT since there is a window
+                debugger.next();
+            }
+
+
+        });
+
+        inputHandler.send(new Object[]{"WSO2", 50f, 60});
+        inputHandler.send(new Object[]{"WSO2", 70f, 40});
+        inputHandler.send(new Object[]{"WSO2", 60f, 50});
+
+        Thread.sleep(1500);
+
+        //Assert.assertEquals("Invalid number of output events", 3, inEventCount.get());
+        //Assert.assertEquals("Invalid number of debug events", 3, debugEventCount.get());
+
+        executionPlanRuntime.shutdown();
+    }
+
+
     public void testDebugger9() throws InterruptedException {
         log.info("Siddi Debugger Test 9: Test state traversal in a simple query");
 
@@ -184,7 +243,7 @@ public class SiddhiTest {
                 log.info(event);
 
                 int count = debugEventCount.addAndGet(getCount(event));
-                debugger.next();
+                debugger.play();
             }
         });
 
@@ -208,6 +267,6 @@ public class SiddhiTest {
 
        SiddhiTest st = new SiddhiTest();
        st.init();
-       st.testAcquireReleaseBreakpoint();
+       st.testDebugger4();
     }
 }
