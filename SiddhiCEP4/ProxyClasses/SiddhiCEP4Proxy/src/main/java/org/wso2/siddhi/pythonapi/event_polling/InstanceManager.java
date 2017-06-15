@@ -7,6 +7,10 @@ public class InstanceManager {
     // A non static class InstanceManager is needed to obtain singleton of EventQueue since pyjnius doesnt support static methods
     private static EventQueue eventQueue = null;
     public EventQueue getEventQueueInstance(){
+       return InstanceManager.getEventQueue();
+    }
+
+    public static EventQueue getEventQueue(){
         if(InstanceManager.eventQueue == null)
         {
             InstanceManager.eventQueue = new EventQueue();

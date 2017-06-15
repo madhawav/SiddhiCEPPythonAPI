@@ -54,6 +54,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName,queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -116,6 +117,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -180,6 +182,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 logging.info("Query: " + queryName + "\t" + str(current_milli_time()))
                 logging.info(event)
 
@@ -245,12 +248,13 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 logging.info(event)
 
                 count = _self_shaddow.debugEventCount.addAndGet(_self_shaddow.getCount(event))
 
                 if count != 1 and queryTerminal.name == SiddhiDebugger.QueryTerminal.IN.name:
-                    log.info("sleeping")
+                    logging.info("sleeping")
                     sleep(1.1)
 
                 #next call will not reach OUT since there is a window
@@ -301,6 +305,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -360,6 +365,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -425,6 +431,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
 
                 log.info("Query: " + queryName + "\t" + str(current_milli_time()))
                 log.info(event)
@@ -490,6 +497,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
 
                 log.info(event)
 
@@ -548,6 +556,8 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
+                debugger = SiddhiDebugger._fromSiddhiDebuggerProxy(debugger)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -619,6 +629,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -694,6 +705,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -775,6 +787,7 @@ class TestDebugger(TestCase):
                 SiddhiDebuggerCallback.__init__(self)
                 self.queryOneResumed = AtomicInt(0)
             def debugEvent(self, event, queryName, queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 
@@ -839,6 +852,7 @@ class TestDebugger(TestCase):
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName,queryTerminal, debugger):
+                queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
                 log.info("Query: " + queryName + ":" + queryTerminal.name)
                 log.info(event)
 

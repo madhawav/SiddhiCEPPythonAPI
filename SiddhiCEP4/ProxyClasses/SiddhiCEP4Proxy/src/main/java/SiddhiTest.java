@@ -142,8 +142,12 @@ public class SiddhiTest {
 
         Thread.sleep(1500);
 
-        //Assert.assertEquals("Invalid number of output events", 3, inEventCount.get());
-        //Assert.assertEquals("Invalid number of debug events", 3, debugEventCount.get());
+        if(inEventCount.get() != 3)
+            System.out.println("Invalid number of output events " + inEventCount.get());
+
+        if(debugEventCount.get() != 3)
+            System.out.println("Invalid number of debug events " + debugEventCount.get());
+
 
         executionPlanRuntime.shutdown();
     }

@@ -1,8 +1,11 @@
+
 from SiddhiCEP4.DataTypes.DataWrapper import unwrapHashMap
 from SiddhiCEP4.core import siddhi_api_core_inst
 from enum import Enum
 
 from jnius.reflect import autoclass
+
+from SiddhiCEP4.core import event_polling_instance
 
 class SiddhiDebugger:
 
@@ -85,11 +88,13 @@ class SiddhiDebugger:
         self.siddhi_debugger_proxy.acquireBreakPoint(queryName,queryTerminal.value)
 
     def setDebuggerCallback(self, siddhi_debugger_callback):
-        if siddhi_debugger_callback is None:
-            self.siddhi_debugger_proxy.setDebuggerCallback(None)
-            return
+        #if siddhi_debugger_callback is None:
+        #    self.siddhi_debugger_proxy.setDebuggerCallback(None)
+        #    return
 
         self.siddhi_debugger_proxy.setDebuggerCallback(siddhi_debugger_callback._siddhi_debugger_callback_proxy_inst)
+
+        event_polling_instance.addDebugCallbackEvent(siddhi_debugger_callback)
 
     def play(self):
         '''

@@ -5,6 +5,9 @@ import org.wso2.siddhi.core.debugger.SiddhiDebugger;
 import org.wso2.siddhi.core.debugger.SiddhiDebuggerCallback;
 import org.wso2.siddhi.core.event.ComplexEvent;
 import org.wso2.siddhi.core.event.Event;
+import org.wso2.siddhi.pythonapi.event_polling.EventQueue;
+import org.wso2.siddhi.pythonapi.event_polling.InstanceManager;
+import org.wso2.siddhi.pythonapi.event_polling.QueuedEvent;
 import org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy;
 import org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.ReceiveCallbackProxy;
 import org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy;
@@ -16,6 +19,7 @@ import org.wso2.siddhi.pythonapi.threadfix.PyThreadFix;
  */
 public class SiddhiDebuggerCallbackProxy implements SiddhiDebuggerCallback {
     private DebugEventCallbackProxy debugEventCallback = null;
+
     public void setDebugEventCallback(DebugEventCallbackProxy value){
         this.debugEventCallback = value;
     }
@@ -24,7 +28,12 @@ public class SiddhiDebuggerCallbackProxy implements SiddhiDebuggerCallback {
 
     public void debugEvent(ComplexEvent complexEvent, String queryName, SiddhiDebugger.QueryTerminal queryTerminal, SiddhiDebugger siddhiDebugger) {
         new PyThreadFix().fix();
-        this.debugEventCallback.debugEvent(complexEvent,queryName,new QueryTerminalProxy(queryTerminal), siddhiDebugger);
+        //if (this.debugEventCallback != null)
+        //    this.debugEventCallback.debugEvent(complexEvent,queryName,new QueryTerminalProxy(queryTerminal), siddhiDebugger);
+        System.out.println("Debug Event Called");
+        EventQueue eventQueue = InstanceManager.getEventQueue();
+        eventQueue.addEvent(QueuedEvent.createDebuggerCallbackEvent(complexEvent,queryName,new QueryTerminalProxy(queryTerminal),siddhiDebugger));
+
     }
 
     @Override

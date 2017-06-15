@@ -19,6 +19,7 @@ public class EventQueue {
 
     public void addEvent(QueuedEvent event)
     {
+        System.out.println("Event added");
         queuedEvents.add(event);
     }
 }

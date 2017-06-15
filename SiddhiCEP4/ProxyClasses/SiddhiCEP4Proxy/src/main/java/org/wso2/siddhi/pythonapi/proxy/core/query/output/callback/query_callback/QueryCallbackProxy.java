@@ -12,14 +12,20 @@ import org.wso2.siddhi.pythonapi.threadfix.PyThreadFix;
  */
 public class QueryCallbackProxy extends QueryCallback {
     private ReceiveCallbackProxy receiveCallback = null;
+
     public void setReceiveCallback(ReceiveCallbackProxy value){
         this.receiveCallback = value;
     }
+
+
     private static final Logger log = Logger.getLogger(StreamCallbackProxy.class);
     public void receive(long timestamp, Event[] inEvents, Event[] ouEvents) {
         new PyThreadFix().fix();
 
-        this.receiveCallback.receive(timestamp,inEvents,ouEvents);
+        if(this.receiveCallback != null)
+            this.receiveCallback.receive(timestamp,inEvents,ouEvents);
+
+
     }
 
     @Override
