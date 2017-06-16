@@ -1,5 +1,8 @@
 import threading
+from logging import log, info
 from time import sleep
+
+import logging
 
 import SiddhiCEP4.core #Initializes Library
 
@@ -81,7 +84,6 @@ class SiddhiDebugger:
                 while event_polling_started:
                     with self.pollLock:
                         event = self.event_queue.getQueuedEvent()
-                        print("Event", event)
                         if event is not None:
                             if event.isDebugEvent():
                                 debug_callback = self.debugCallback
@@ -98,9 +100,9 @@ class SiddhiDebugger:
                                     debug_callback.debugEvent(complexEvent, queryName, queryTerminal, debugger)
                                 elif event.isGCEvent():
                                     self.debugCallback = None  # Release reference held with callback since it has been destroyed from Java Side
-                        else:
-                            print("Got none event")
-                    #sleep(0.05) #Sleep is no longer needed since getQueuedEvents is made blocking
+
+                    sleep(0.005) #NOTE: Removing this sleep causes changing of Debug Callback to fail
+                    #TODO: Investigate why removal of above sleep causes condition in above note
 
             if self.pollThread is not None:
                 self.pollThread.join()  # In case a previous eventPolling is ending, wait for it to end

@@ -31,26 +31,25 @@ public class EventQueue {
      * @return
      */
     public QueuedEvent getQueuedEvent(){
-        //NOTE: it is assumed that no concurrent blocked getQueuedEvent calls would exist.
-        //NOTE. i.e. it is assumed that events are fetched using a single thread
+
         if(queuedEvents.isEmpty())
         {
             try {
                 synchronized (this) {
                     this.blocked = true;
                 }
-                System.out.println("Event Block Check");
+                log.trace("Event Block Check");
                 eventsBlock.acquire();
-                System.out.println("Event Block Acquired");
+                log.trace("Event Block Acquired");
                 synchronized (this) {
                     this.blocked = false;
                 }
-                System.out.println("Block unset");
+                log.trace("Block unset");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("Returning queued events");
+        log.trace("Returning queued events");
         return queuedEvents.remove();
     }
 
@@ -65,7 +64,7 @@ public class EventQueue {
             if(blocked)
             {
                 eventsBlock.release();
-                System.out.println("Interrupt Released");
+                log.trace("Interrupt Released");
                 this.blocked = false;
             }
         }
