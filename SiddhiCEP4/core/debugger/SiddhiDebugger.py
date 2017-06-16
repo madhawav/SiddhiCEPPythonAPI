@@ -46,6 +46,10 @@ class SiddhiDebugger:
             :param event_queue: 
             :return: 
             '''
+
+            if self.event_queue is not None:
+                self.event_queue.interrupt()
+
             if debug_callback is None:
                 with self.pollLock:
                     self.debugCallback = None
@@ -77,6 +81,7 @@ class SiddhiDebugger:
                 while event_polling_started:
                     with self.pollLock:
                         event = self.event_queue.getQueuedEvent()
+                        print("Event", event)
                         if event is not None:
                             if event.isDebugEvent():
                                 debug_callback = self.debugCallback
@@ -93,7 +98,9 @@ class SiddhiDebugger:
                                     debug_callback.debugEvent(complexEvent, queryName, queryTerminal, debugger)
                                 elif event.isGCEvent():
                                     self.debugCallback = None  # Release reference held with callback since it has been destroyed from Java Side
-                    sleep(0.05)
+                        else:
+                            print("Got none event")
+                    #sleep(0.05) #Sleep is no longer needed since getQueuedEvents is made blocking
 
             if self.pollThread is not None:
                 self.pollThread.join()  # In case a previous eventPolling is ending, wait for it to end

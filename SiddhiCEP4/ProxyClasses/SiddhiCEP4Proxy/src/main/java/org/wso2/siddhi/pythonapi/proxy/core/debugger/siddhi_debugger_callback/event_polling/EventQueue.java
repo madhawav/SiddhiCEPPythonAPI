@@ -12,14 +12,16 @@ import java.util.concurrent.Semaphore;
  */
 public class EventQueue {
     private Queue<QueuedEvent> queuedEvents = null;
-    private Semaphore eventCount = null;
+    private Semaphore eventsBlock = null; //Used to block getQueuedEvents when no events are present
+    private boolean blocked = false; //Indicates whether a blocked getQueuedEvents is pending
 
     /**
      * Instantiate a new EventQueue
      */
     public EventQueue(){
         this.queuedEvents = new ConcurrentLinkedQueue<QueuedEvent>();
-        this.eventCount = new Semaphore(0);
+        this.eventsBlock = new Semaphore(0);
+        this.blocked = false;
     }
 
     private static final Logger log = Logger.getLogger(EventQueue.class);
@@ -29,14 +31,44 @@ public class EventQueue {
      * @return
      */
     public QueuedEvent getQueuedEvent(){
-        try {
-            eventCount.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //NOTE: it is assumed that no concurrent blocked getQueuedEvent calls would exist.
+        //NOTE. i.e. it is assumed that events are fetched using a single thread
         if(queuedEvents.isEmpty())
-            return null;
+        {
+            try {
+                synchronized (this) {
+                    this.blocked = true;
+                }
+                System.out.println("Event Block Check");
+                eventsBlock.acquire();
+                System.out.println("Event Block Acquired");
+                synchronized (this) {
+                    this.blocked = false;
+                }
+                System.out.println("Block unset");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Returning queued events");
         return queuedEvents.remove();
+    }
+
+    /**
+     * Interrupts a pending blocking call to getQueuedEvent.
+     * Interrupt should be used when SiddhiDebuggerCallback is changed to release the event processing thread from blocking getQueuedEvent call
+     */
+    public void interrupt()
+    {
+        synchronized (this)
+        {
+            if(blocked)
+            {
+                eventsBlock.release();
+                System.out.println("Interrupt Released");
+                this.blocked = false;
+            }
+        }
     }
 
     /**
@@ -46,11 +78,7 @@ public class EventQueue {
     public QueuedEvent getQueuedEventAsync(){
         if(queuedEvents.isEmpty())
             return null;
-        try {
-            eventCount.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         return queuedEvents.remove();
     }
 
@@ -62,7 +90,15 @@ public class EventQueue {
     {
         log.trace("Event Added");
         queuedEvents.add(event);
-        eventCount.release();
+        synchronized (this)
+        {
+            if(blocked)
+            {
+                eventsBlock.release();
+                this.blocked = false;
+            }
+
+        }
     }
 }
 
