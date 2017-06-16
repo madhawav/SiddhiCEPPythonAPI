@@ -5,29 +5,52 @@ import org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callba
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 
 /**
  * Shared Queue of events between Java and Python. Used to pass Debug Events to Python from Java using polling.
  */
 public class EventQueue {
     private Queue<QueuedEvent> queuedEvents = null;
+    private Semaphore eventCount = null;
 
     /**
      * Instantiate a new EventQueue
      */
     public EventQueue(){
         this.queuedEvents = new ConcurrentLinkedQueue<QueuedEvent>();
+        this.eventCount = new Semaphore(0);
     }
 
     private static final Logger log = Logger.getLogger(EventQueue.class);
 
     /**
-     * Retrieve the next event in queue. Returns null if queue is empty.
+     * Retrieve the next event in queue. Blocks if no events in queue.
      * @return
      */
     public QueuedEvent getQueuedEvent(){
+        try {
+            eventCount.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if(queuedEvents.isEmpty())
             return null;
+        return queuedEvents.remove();
+    }
+
+    /**
+     * Retrieve the next event in queue. Return null if no event.
+     * @return
+     */
+    public QueuedEvent getQueuedEventAsync(){
+        if(queuedEvents.isEmpty())
+            return null;
+        try {
+            eventCount.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return queuedEvents.remove();
     }
 
@@ -39,6 +62,7 @@ public class EventQueue {
     {
         log.trace("Event Added");
         queuedEvents.add(event);
+        eventCount.release();
     }
 }
 

@@ -10,6 +10,7 @@ import org.wso2.siddhi.core.stream.input.InputHandler;
 import org.wso2.siddhi.core.stream.output.StreamCallback;
 
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -330,6 +331,8 @@ public class SiddhiTest {
     }
 
     public static void main(String[] args) throws InterruptedException {
+
+        Semaphore s = new Semaphore(0);
 
        SiddhiTest st = new SiddhiTest();
        st.init();
