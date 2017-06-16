@@ -46,7 +46,7 @@ class TestDebugger(TestCase):
 
         sleep(1)
 
-        _self_shaddow.assertEquals(36, _self_shaddow.inEventCount.get(), "Invalid number of output events")
+        _self_shaddow.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
 
 
         executionPlanRuntime.shutdown()

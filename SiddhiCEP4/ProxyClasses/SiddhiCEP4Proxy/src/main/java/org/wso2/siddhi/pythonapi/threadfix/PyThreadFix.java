@@ -8,18 +8,22 @@ package org.wso2.siddhi.pythonapi.threadfix;
 import org.wso2.siddhi.pythonapi.proxy.core.SiddhiAPICoreProxy;
 
 public class PyThreadFix {
+    /**
+     * PyThreadFix is used to fix a threading related issue in Python 3.4+.
+     * Issue Description:
+     *  In Python 3.4+, callbacks to Python from non Python created threads cause Python interpreter to crash.
+     *  This could be fixed by calling a set of Python C API functions prior to sending the callback to Python.
+     *  The set of Python C API functions required are called in fixThread native method.
+     */
     static {
-        System.out.println(System.getProperty("java.library.path"));
-        //System.load("/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/libpython3.5m.so");
-        //System.load("/usr/lib/x86_64-linux-gnu/libboost_python-py35.so");
         System.loadLibrary("org_wso2_siddhi_pythonapi_threadfix_pythreadfix"); // Load native library at runtime
-        // hello.dll (Windows) or libhello.so (Unixes)
     }
 
-    // Declare a native method sayHello() that receives nothing and returns void
+    // The native fixThread method which has necessary C code to fix the threading issue
     private native void fixThread();
 
     public void fix(){
+        //Do a version check. The fix is needed in Python 3.4+
         if(SiddhiAPICoreProxy.getPythonVersionMajor() == 3 && SiddhiAPICoreProxy.getPythonVersionMinor() >= 4)
             fixThread();
     }

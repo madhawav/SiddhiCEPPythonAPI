@@ -20,6 +20,7 @@ public class SiddhiTest {
     private static volatile int count;
     private AtomicInteger inEventCount = new AtomicInteger(0);
     private AtomicInteger debugEventCount = new AtomicInteger(0);
+
     public void doTest1(){
         SiddhiManager siddhiManager = new SiddhiManager();
 
@@ -143,10 +144,10 @@ public class SiddhiTest {
         Thread.sleep(1500);
 
         if(inEventCount.get() != 3)
-            System.out.println("Invalid number of output events " + inEventCount.get());
+            log.fatal("Invalid number of output events " + inEventCount.get());
 
         if(debugEventCount.get() != 3)
-            System.out.println("Invalid number of debug events " + debugEventCount.get());
+            log.fatal("Invalid number of debug events " + debugEventCount.get());
 
 
         executionPlanRuntime.shutdown();
@@ -215,6 +216,67 @@ public class SiddhiTest {
         executionPlanRuntime.shutdown();
     }
 
+    public void testSetCallback() throws InterruptedException {
+        log.info("Siddi Debugger Test 1: Test next traversal in a simple query");
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+
+        String cseEventStream = "@config(async = 'true') define stream cseEventStream (symbol string, price float, " +
+                "volume int);";
+        final String query = "@info(name = 'query 1')" +
+                "from cseEventStream " +
+                "select symbol, price, volume " +
+                "insert into OutputStream; ";
+
+        ExecutionPlanRuntime executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query);
+
+        executionPlanRuntime.addCallback("OutputStream", new StreamCallback() {
+            @Override
+            public void receive(Event[] events) {
+                inEventCount.addAndGet(events.length);
+            }
+        });
+        InputHandler inputHandler = executionPlanRuntime.getInputHandler("cseEventStream");
+
+        SiddhiDebugger siddhiDebugger = executionPlanRuntime.debug();
+        siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN);
+
+        siddhiDebugger.setDebuggerCallback(new SiddhiDebuggerCallback() {
+            public void debugEvent(ComplexEvent event, String queryName, SiddhiDebugger.QueryTerminal queryTerminal,
+                                   SiddhiDebugger debugger) {
+                log.info("C1: Query: " + queryName + ":" + queryTerminal);
+                log.info(event);
+
+                int count = debugEventCount.addAndGet(getCount(event));
+                debugger.next();
+            }
+        });
+
+        siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN);
+
+        inputHandler.send(new Object[]{"WSO2", 50f, 60});
+
+        siddhiDebugger.setDebuggerCallback(new SiddhiDebuggerCallback() {
+            public void debugEvent(ComplexEvent event, String queryName, SiddhiDebugger.QueryTerminal queryTerminal,
+                                   SiddhiDebugger debugger) {
+                log.info("C2: Query: " + queryName + ":" + queryTerminal);
+                log.info(event);
+
+                int count = debugEventCount.addAndGet(getCount(event));
+                debugger.next();
+            }
+        });
+
+        inputHandler.send(new Object[]{"WSO2", 70f, 40});
+
+        Thread.sleep(100);
+
+        //Assert.assertEquals("Invalid number of output events", 2, inEventCount.get());
+        //Assert.assertEquals("Invalid number of debug events", 4, debugEventCount.get());
+
+        executionPlanRuntime.shutdown();
+    }
+
     public void testAcquireReleaseBreakpoint() throws InterruptedException {
         log.info("Siddi Debugger Test 1: Test next traversal in a simple query");
 
@@ -271,6 +333,6 @@ public class SiddhiTest {
 
        SiddhiTest st = new SiddhiTest();
        st.init();
-       st.testDebugger4();
+       st.testSetCallback();
     }
 }

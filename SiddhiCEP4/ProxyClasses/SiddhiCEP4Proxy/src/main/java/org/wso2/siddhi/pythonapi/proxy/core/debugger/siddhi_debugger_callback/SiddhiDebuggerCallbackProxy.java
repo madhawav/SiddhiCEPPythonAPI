@@ -4,12 +4,9 @@ import org.apache.log4j.Logger;
 import org.wso2.siddhi.core.debugger.SiddhiDebugger;
 import org.wso2.siddhi.core.debugger.SiddhiDebuggerCallback;
 import org.wso2.siddhi.core.event.ComplexEvent;
-import org.wso2.siddhi.core.event.Event;
-import org.wso2.siddhi.pythonapi.event_polling.EventQueue;
-import org.wso2.siddhi.pythonapi.event_polling.InstanceManager;
-import org.wso2.siddhi.pythonapi.event_polling.QueuedEvent;
+import org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger_callback.event_polling.EventQueue;
+import org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger_callback.event_polling.QueuedEvent;
 import org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy;
-import org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.ReceiveCallbackProxy;
 import org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy;
 import org.wso2.siddhi.pythonapi.threadfix.PyThreadFix;
 
@@ -18,28 +15,25 @@ import org.wso2.siddhi.pythonapi.threadfix.PyThreadFix;
  * Created by madhawa on 5/27/17.
  */
 public class SiddhiDebuggerCallbackProxy implements SiddhiDebuggerCallback {
-    private DebugEventCallbackProxy debugEventCallback = null;
-
-    public void setDebugEventCallback(DebugEventCallbackProxy value){
-        this.debugEventCallback = value;
-    }
-
     private static final Logger log = Logger.getLogger(StreamCallbackProxy.class);
+
+    private EventQueue debuggerEventQueue = new EventQueue();
+
+    public EventQueue getEventQueue(){
+        return this.debuggerEventQueue;
+    }
 
     public void debugEvent(ComplexEvent complexEvent, String queryName, SiddhiDebugger.QueryTerminal queryTerminal, SiddhiDebugger siddhiDebugger) {
         new PyThreadFix().fix();
-        //if (this.debugEventCallback != null)
-        //    this.debugEventCallback.debugEvent(complexEvent,queryName,new QueryTerminalProxy(queryTerminal), siddhiDebugger);
-        System.out.println("Debug Event Called");
-        EventQueue eventQueue = InstanceManager.getEventQueue();
-        eventQueue.addEvent(QueuedEvent.createDebuggerCallbackEvent(complexEvent,queryName,new QueryTerminalProxy(queryTerminal),siddhiDebugger));
 
+        log.info("Debug Event Called");
+        debuggerEventQueue.addEvent(QueuedEvent.createDebugEvent(complexEvent,queryName,new QueryTerminalProxy(queryTerminal),siddhiDebugger));
     }
 
     @Override
     public void finalize() throws java.lang.Throwable {
         //We need to inform Python when Java GC collects so it can remove the references held
         log.info("Java GC Collection");
-        this.debugEventCallback.gc();
+        debuggerEventQueue.addEvent(QueuedEvent.createGCEvent());
     }
 }

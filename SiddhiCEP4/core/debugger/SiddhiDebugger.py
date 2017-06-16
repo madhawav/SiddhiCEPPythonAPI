@@ -1,11 +1,15 @@
+import threading
+from time import sleep
+
+import SiddhiCEP4.core #Initializes Library
 
 from SiddhiCEP4.DataTypes.DataWrapper import unwrapHashMap
-from SiddhiCEP4.core import siddhi_api_core_inst
 from enum import Enum
 
 from jnius.reflect import autoclass
 
-from SiddhiCEP4.core import event_polling_instance
+from SiddhiCEP4.core.event.ComplexEvent import ComplexEvent
+
 
 class SiddhiDebugger:
 
@@ -24,6 +28,80 @@ class SiddhiDebugger:
                 raise TypeError("Unknown QueryTerminal Value")
             return SiddhiDebugger.QueryTerminal(qt_value)
 
+    class _EventPoller:
+        '''
+        Polls Events from SiddhiDebuggerCallback
+        '''
+        def __init__(self):
+            self.pollLock = threading.RLock() #Lock used to access class resources from polling thread
+            self.pollThread = None
+            self.debugCallback = None #Callback registered to receive events from debugger
+            self.event_polling_started = False
+            self.event_queue = None # EventQueue proxy class from Java which contains event queue
+
+        def setDebugCallbackEvent(self, debug_callback, event_queue):
+            '''
+            Registers a debug_callback with event_queue
+            :param debug_callback: 
+            :param event_queue: 
+            :return: 
+            '''
+            if debug_callback is None:
+                with self.pollLock:
+                    self.debugCallback = None
+                    self.event_polling_started = False
+                    return
+
+            with self.pollLock:
+                if not self.event_polling_started:
+                    self.initEventPolling()
+
+                self.event_queue = event_queue
+                self.debugCallback = debug_callback
+
+        def initEventPolling(self):
+            '''
+            Start event polling
+            :return: 
+            '''
+            if self.event_polling_started:
+                # No need init since event polling is already started
+                return
+
+            def pollLoop():
+                event_polling_started = False
+
+                with self.pollLock:
+                    event_polling_started = self.event_polling_started
+
+                while event_polling_started:
+                    with self.pollLock:
+                        event = self.event_queue.getQueuedEvent()
+                        if event is not None:
+                            if event.isDebugEvent():
+                                debug_callback = self.debugCallback
+                                if debug_callback is not None:
+                                    complexEvent = event.getComplexEvent(0)
+                                    queryName = event.getString(1)
+                                    queryTerminal = event.getQueryTerminal(2)
+                                    debugger = event.getSiddhiDebugger(3)
+
+                                    complexEvent = ComplexEvent._fromComplexEventProxy(complexEvent)
+                                    queryTerminal = SiddhiDebugger.QueryTerminal._map_value(queryTerminal)
+                                    debugger = SiddhiDebugger._fromSiddhiDebuggerProxy(debugger)
+
+                                    debug_callback.debugEvent(complexEvent, queryName, queryTerminal, debugger)
+                                elif event.isGCEvent():
+                                    self.debugCallback = None  # Release reference held with callback since it has been destroyed from Java Side
+                    sleep(0.05)
+
+            if self.pollThread is not None:
+                self.pollThread.join()  # In case a previous eventPolling is ending, wait for it to end
+            self.pollThread = threading.Thread(target=pollLoop, daemon=True)
+            self.event_polling_started = True
+            self.pollThread.start()
+
+
     def __init__(self):
         #TODO: Require ExecutionPlanContext to implement constructor
         raise NotImplementedError("Not Implemented")
@@ -37,7 +115,11 @@ class SiddhiDebugger:
         '''
         instance = cls.__new__(cls)
         instance.siddhi_debugger_proxy = siddhi_debugger_proxy
+        instance.event_poller = SiddhiDebugger._EventPoller()
+        instance.callback = None #The callback currently listening for debug callbacks
         return instance
+
+
 
     def releaseBreakPoint(self, queryName, queryTerminal):
         '''
@@ -88,13 +170,12 @@ class SiddhiDebugger:
         self.siddhi_debugger_proxy.acquireBreakPoint(queryName,queryTerminal.value)
 
     def setDebuggerCallback(self, siddhi_debugger_callback):
-        #if siddhi_debugger_callback is None:
-        #    self.siddhi_debugger_proxy.setDebuggerCallback(None)
-        #    return
-
-        self.siddhi_debugger_proxy.setDebuggerCallback(siddhi_debugger_callback._siddhi_debugger_callback_proxy_inst)
-
-        event_polling_instance.addDebugCallbackEvent(siddhi_debugger_callback)
+        if siddhi_debugger_callback is not None:
+            self.siddhi_debugger_proxy.setDebuggerCallback(siddhi_debugger_callback._siddhi_debugger_callback_proxy_inst)
+            self.event_poller.setDebugCallbackEvent(siddhi_debugger_callback,siddhi_debugger_callback._siddhi_debugger_callback_proxy_inst.getEventQueue())
+        else:
+            self.event_poller.setDebugCallbackEvent(None,None)
+            self.siddhi_debugger_proxy.setDebuggerCallback(None)
 
     def play(self):
         '''

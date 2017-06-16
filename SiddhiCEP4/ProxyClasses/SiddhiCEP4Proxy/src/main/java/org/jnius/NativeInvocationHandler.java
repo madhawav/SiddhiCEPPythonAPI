@@ -1,4 +1,6 @@
 package org.jnius;
+import org.apache.log4j.Logger;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -12,22 +14,23 @@ public class NativeInvocationHandler implements InvocationHandler {
 
     public Object invoke(Object proxy, Method method, Object[] args) {
         if ( DEBUG ) {
-            System.out.print("+ java:invoke(<proxy>, ");
+            Logger log = Logger.getLogger(NativeInvocationHandler.class);
+            log.info("+ java:invoke(<proxy>, ");
             // don't call it, or recursive lookup/proxy will go!
-            //System.out.print(proxy);
-            //System.out.print(", ");
-            System.out.print(method);
-            System.out.print(", ");
-            System.out.print(args);
-            System.out.println(")");
-            System.out.flush();
+            //log.info(proxy);
+            //log.info(", ");
+            log.info(method);
+            log.info(", ");
+            log.info(args);
+            log.info(")");
         }
 
         Object ret = invoke0(proxy, method, args);
 
         if ( DEBUG ) {
-            System.out.print("+ java:invoke returned: ");
-            System.out.println(ret);
+            Logger log = Logger.getLogger(NativeInvocationHandler.class);
+            log.info("+ java:invoke returned: ");
+            log.info(ret);
         }
 
         return ret;

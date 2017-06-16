@@ -8,7 +8,7 @@ from SiddhiCEP4.core.stream.output.StreamCallback import StreamCallback
 from Tests.Util.AtomicInt import AtomicInt
 
 
-class TestDebugger(TestCase):
+class TestOutputStream(TestCase):
     def setUp(self):
         self.inEventCount = AtomicInt(0)
         self.debugEventCount = AtomicInt(0)
@@ -45,7 +45,7 @@ class TestDebugger(TestCase):
 
         sleep(1)
 
-        _self_shaddow.assertEquals(36, _self_shaddow.inEventCount.get(), "Invalid number of output events")
+        _self_shaddow.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
 
 
         executionPlanRuntime.shutdown()

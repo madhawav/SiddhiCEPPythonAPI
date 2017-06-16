@@ -33,15 +33,12 @@ class StreamCallback(metaclass=ABCMeta):
 
             @java_method(signature='([Lorg/wso2/siddhi/core/event/Event;)V', name="receive")
             def receive(self, events):
-                #_lock.acquire()
-                logging.info("Received")
                 stream_callback_self.receive(events)
-                #_lock.release()
 
             @java_method(signature='()V', name="gc")
             def gc(self):
                 _created_instances.remove(stream_callback_self)
-                logging.info("Java Reported GC Collected Stream Callback")
+                logging.trace("Java Reported GC Collected Stream Callback")
 
         self._receive_callback_ref = ReceiveCallback() #Hold reference to prevent python from GC callback before java does
         self._stream_callback_proxy.setReceiveCallback(self._receive_callback_ref)

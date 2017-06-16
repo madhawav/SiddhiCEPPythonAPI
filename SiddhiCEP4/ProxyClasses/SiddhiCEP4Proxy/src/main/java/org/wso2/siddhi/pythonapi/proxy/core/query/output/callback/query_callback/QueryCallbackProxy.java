@@ -18,7 +18,7 @@ public class QueryCallbackProxy extends QueryCallback {
     }
 
 
-    private static final Logger log = Logger.getLogger(StreamCallbackProxy.class);
+    private static final Logger log = Logger.getLogger(QueryCallbackProxy.class);
     public void receive(long timestamp, Event[] inEvents, Event[] ouEvents) {
         new PyThreadFix().fix();
 
