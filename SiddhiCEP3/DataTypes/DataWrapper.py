@@ -16,7 +16,9 @@ def unwrapDataItem(d):
     :param d: 
     :return: 
     '''
-    if d.isLong():
+    if d.isNull():
+        return None
+    elif d.isLong():
         return LongType(d.getData())
     return d.getData()
 
@@ -50,7 +52,10 @@ def wrapDataItem(d):
     '''
     wrapped_data_proxy = autoclass("org.wso2.siddhi.pythonapi.DataWrapProxy")
     wrapped_data = None
-    if type(d) is LongType:
+    if d is None:
+        #Constructor for null type
+        wrapped_data = wrapped_data_proxy(0,False,True)
+    elif type(d) is LongType:
         wrapped_data = wrapped_data_proxy(d, True)
     else:
         wrapped_data = wrapped_data_proxy(d)

@@ -332,8 +332,6 @@ public class SiddhiTest {
 
     public static void main(String[] args) throws InterruptedException {
 
-        Semaphore s = new Semaphore(0);
-
        SiddhiTest st = new SiddhiTest();
        st.init();
        st.testSetCallback();

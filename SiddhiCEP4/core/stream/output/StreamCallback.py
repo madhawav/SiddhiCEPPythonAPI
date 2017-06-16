@@ -8,6 +8,7 @@ from abc import ABCMeta, abstractmethod
 
 from jnius import autoclass, java_method, PythonJavaClass
 
+from SiddhiCEP4.core.event.Event import Event
 
 _stream_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy")
 
@@ -33,6 +34,8 @@ class StreamCallback(metaclass=ABCMeta):
 
             @java_method(signature='([Lorg/wso2/siddhi/core/event/Event;)V', name="receive")
             def receive(self, events):
+                if events is not None:
+                    events = [Event._fromEventProxy(event) for event in events]
                 stream_callback_self.receive(events)
 
             @java_method(signature='()V', name="gc")

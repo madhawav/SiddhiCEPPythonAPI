@@ -7,6 +7,7 @@ from abc import ABCMeta, abstractmethod
 
 from jnius import autoclass, java_method, PythonJavaClass
 
+from SiddhiCEP3.core.event.Event import Event
 
 _query_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.QueryCallbackProxy")
 #_lock = Lock()
@@ -29,6 +30,11 @@ class QueryCallback(metaclass=ABCMeta):
                          name="receive")
             def receive(self, timestamp, inEvents, outEvents):
                 #_lock.acquire()
+                if inEvents is not None:
+                    inEvents = [Event._fromEventProxy(event) for event in inEvents]
+                if outEvents is not None:
+                    outEvents = [Event._fromEventProxy(event) for event in outEvents]
+
                 query_callback_self.receive(timestamp,inEvents,outEvents)
                 #_lock.release()
 

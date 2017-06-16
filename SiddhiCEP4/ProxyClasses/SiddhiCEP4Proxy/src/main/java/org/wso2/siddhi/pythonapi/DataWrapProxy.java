@@ -26,6 +26,18 @@ public class DataWrapProxy {
     {
         this.data = (long)data;
     }
+
+    public DataWrapProxy(int data, boolean isLong, boolean isNull)
+    {
+        if(isNull)
+        {
+            this.data = null;
+        }
+    }
+
+    public boolean isNull(){
+        return this.data == null;
+    }
     public boolean isLong(){
         return this.data instanceof Long;
     }
@@ -53,10 +65,13 @@ public class DataWrapProxy {
     }
 
     public static DataWrapProxy wrap(Object data) {
+        if(data == null)
+            return new DataWrapProxy(null);
         if(data instanceof Integer)
             return new DataWrapProxy((Integer)data);
         else if(data instanceof Long)
-            return new DataWrapProxy((Long)data);
+            //TODO: Check removal of Integer casting here
+            return new DataWrapProxy((int)(long)(Long) data,true);
         else if(data instanceof String)
             return new DataWrapProxy((String)data);
         else if(data instanceof Float)
