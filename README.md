@@ -24,8 +24,12 @@ Installing the Library from Source
     - Python 3.x
     - Cython (`sudo apt-get install cython`)
     - Pyjnius (`sudo pip install pyjnius`)
-    - Python3 Developer Package (`sudo apt-get install python3-dev`)
-    - Maven
+    - Python3 Developer Package (`sudo apt-get install python-dev python3-dev`)
+    - libboost for Python3 (`sudo apt-get install libboost-python-dev`)
+    - Maven and Java 8
+    - g++ and other development tools 
+      - `sudo apt-get install build-essential g++ autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev`
+      
 2. Install using Setup.py.
     - Navigate to project root and run `sudo pip3 install .`
 
@@ -61,7 +65,7 @@ Running the Tests
 
 Background
 -----
-Siddhi CEP is a Query Language and a Library for Realtime Streaming Complex Event Processing developed by WSO2 Inc. Siddhi CEP is currently used in WSO2 Data Analytics Server, an Enterprise Level Open Source Data Analytics Solution.
+Siddhi is a Query Language and a Library for Realtime Streaming Complex Event Processing developed by WSO2 Inc. Siddhi CEP is currently used in WSO2 Data Analytics Server, an Enterprise Level Open Source Data Analytics Solution.
 
 Further information on above products are available in the links below.
 
