@@ -10,18 +10,20 @@ from jnius import autoclass, java_method, PythonJavaClass
 
 from SiddhiCEP4.core.event.Event import Event
 
+from future.utils import with_metaclass
+
 _stream_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy")
 
 _lock = RLock()
 
 _created_instances = [] #Hold reference to prevent python from GC callback before java does
 
-class StreamCallback(metaclass=ABCMeta):
+class StreamCallback(with_metaclass(ABCMeta,object)):
     '''
     StreamCallback is used to receive events from StreamJunction
     This class should be extended if one intends to get events from a Siddhi Stream.
     '''
-    __metaclass__ = ABCMeta
+    #__metaclass__ = ABCMeta
 
     def __init__(self):
         self._stream_callback_proxy = _stream_callback_proxy()

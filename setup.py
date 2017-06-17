@@ -9,8 +9,8 @@ class PostInstallCommand(install):
 
     def run(self):
         # Compile JAVA Code here
-        check_call("mvn install".split(),cwd="SiddhiCEP3/ProxyClasses/SiddhiCEP3Proxy/")
-        check_call("mvn install".split(), cwd="SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy/")
+        check_call("mvn clean install".split(),cwd="SiddhiCEP3/ProxyClasses/SiddhiCEP3Proxy/")
+        check_call("mvn clean install".split(), cwd="SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy/")
 
         install.run(self)
 

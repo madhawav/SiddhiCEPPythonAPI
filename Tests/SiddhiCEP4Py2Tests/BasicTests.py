@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+#!/usr/bin/env python2.7
+
 import unittest
 
 import logging

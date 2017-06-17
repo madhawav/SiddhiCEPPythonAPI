@@ -9,13 +9,15 @@ from jnius import autoclass, java_method, PythonJavaClass
 
 from SiddhiCEP4.core.event.Event import Event
 
+from future.utils import with_metaclass
+
 _query_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.QueryCallbackProxy")
 #_lock = Lock()
 
 _created_instances = [] #Hold references to prevent python from GCing Callbacks until Java does
 
-class QueryCallback(metaclass=ABCMeta):
-    __metaclass__ = ABCMeta
+class QueryCallback(with_metaclass(ABCMeta,object)):
+    #__metaclass__ = ABCMeta
     def __init__(self):
 
         self._query_callback_proxy_inst = _query_callback_proxy()

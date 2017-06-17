@@ -1,3 +1,4 @@
+from future.utils import with_metaclass
 from multiprocessing import Lock
 
 import logging
@@ -14,8 +15,8 @@ _query_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.query.ou
 
 _created_instances = [] #Hold references to prevent python from GCing Callbacks until Java does
 
-class QueryCallback(metaclass=ABCMeta):
-    __metaclass__ = ABCMeta
+class QueryCallback(with_metaclass(ABCMeta,object)):
+    #__metaclass__ = ABCMeta
     def __init__(self):
 
         self._query_callback_proxy_inst = _query_callback_proxy()

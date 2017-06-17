@@ -14,7 +14,7 @@ from jnius.reflect import autoclass
 from SiddhiCEP4.core.event.ComplexEvent import ComplexEvent
 
 
-class SiddhiDebugger:
+class SiddhiDebugger(object):
 
     class QueryTerminal(Enum):
         IN = autoclass("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().IN()
@@ -106,7 +106,8 @@ class SiddhiDebugger:
 
             if self.pollThread is not None:
                 self.pollThread.join()  # In case a previous eventPolling is ending, wait for it to end
-            self.pollThread = threading.Thread(target=pollLoop, daemon=True)
+            self.pollThread = threading.Thread(target=pollLoop)
+            self.pollThread.setDaemon(True)
             self.event_polling_started = True
             self.pollThread.start()
 
