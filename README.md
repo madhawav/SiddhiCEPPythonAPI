@@ -1,7 +1,9 @@
 # Siddhi CEP Python API
-The scope of this project is to develop a Python Wrapper on Siddhi CEP Library. Additionally, the Python API would support Siddhi Configuration on WSO2 Data Analytics Server (DAS). The Python wrapper would support Siddhi 3.1, Siddhi 4.0, WSO2 DAS 3.1 and WSO2 DAS 4.0. 
+The scope of this project is to develop a Python Wrapper on Siddhi CEP Library. Additionally, the Python API would support Siddhi Configuration on WSO2 Data Analytics Server (DAS). The Python wrapper would support Siddhi 3.1, Siddhi 4.0, WSO2 DAS 3.1 and WSO2 DAS 4.0.
 
 This is currently a work in progress, as a project for Google Summer of Code 2017 Program.
+
+*Note: Currently the API is configured with Siddhi CEP 3.1.0 and Siddhi CEP 4.0.0-M5 for Python 3.x*
 
 Project Goals
 -----
@@ -11,21 +13,44 @@ Project Goals
 
 Current Progress
 -----
-Currently, the project is in very early stage with discussions on the scope. 
+Currently, the project is in very early stage with discussions on the scope.
 - [x] Wrapping basic features of Siddhi CEP Core 3.1 and 4.0
 - [x] Wrapping Siddhi Debugger
 - [x] Unit Tests on Siddhi Debugger
 
-
-Running the Tests
+Installing the Library from Source
 -----
-1. Install following pre-requisites
+1. Install following pre-requisites.
     - Python 3.x
     - Cython (`sudo apt-get install cython`)
     - Pyjnius (`sudo pip install pyjnius`)
     - Python3 Developer Package (`sudo apt-get install python3-dev`)
     - Maven
-2. Compile Java Libraries
+2. Install using Setup.py.
+    - Navigate to project root and run `sudo pip3 install .`
+
+3. Use the Library using Python 3.
+    - For Siddhi CEP 3.1
+    ```python
+    from SiddhiCEP3.SiddhiCEP3 import SiddhiManager
+    sm = SiddhiManager()
+    ....
+    sm.shutdown()
+    ```
+
+    - For Siddhi CEP 4.0-M5
+    ```python
+    from SiddhiCEP4.SiddhiCEP4 import SiddhiManager
+    sm = SiddhiManager()
+    ....
+    sm.shutdown()
+    ```
+    *Refer Tests to get more familiar with library functionality.
+
+Running the Tests
+-----
+1. Install pre-requisites mentioned in `Installing the Library from Source` section.
+2. Compile Java Libraries.
     - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP3/ProxyClasses/SiddhiCEP3Proxy` and run `mvn install`
     - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy` and run `mvn install`
     - Navigate to `SiddhiCEPPythonAPI/SiddhiCEP4/ProxyClasses/SiddhiCEP3Proxy/threadfix_c_code` and run `build.sh`*
@@ -36,7 +61,7 @@ Running the Tests
 
 Background
 -----
-Siddhi CEP is a Query Language and a Library for Realtime Streaming Complex Event Processing developed by WSO2 Inc. Siddhi CEP is currently used in WSO2 Data Analytics Server, an Enterprise Level Open Source Data Analytics Solution. 
+Siddhi CEP is a Query Language and a Library for Realtime Streaming Complex Event Processing developed by WSO2 Inc. Siddhi CEP is currently used in WSO2 Data Analytics Server, an Enterprise Level Open Source Data Analytics Solution.
 
 Further information on above products are available in the links below.
 
