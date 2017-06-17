@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import unittest
 from multiprocessing import Lock
 from time import sleep

@@ -2,7 +2,7 @@ from SiddhiCEP4.core import siddhi_api_core_inst
 from SiddhiCEP4.core.SiddhiAppRuntime import SiddhiAppRuntime
 
 
-class SiddhiManager:
+class SiddhiManager(object):
     def __init__(self):
         '''
         ''Initialize a new SiddhiManager
