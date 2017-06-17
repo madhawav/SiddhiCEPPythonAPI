@@ -13,7 +13,7 @@ class SiddhiAppRuntime(object):
 
     def __new__(cls):
         bare_instance = object.__new__(cls)
-        bare_instance.execution_plan_runtime_proxy = None
+        bare_instance.siddhi_app_runtime_proxy = None
         return bare_instance
 
     def addCallback(self, queryName, queryCallback):
@@ -24,9 +24,9 @@ class SiddhiAppRuntime(object):
         :return:
         '''
         if isinstance(queryCallback, QueryCallback):
-            siddhi_api_core_inst.addSiddhiAppRuntimeQueryCallback(self.execution_plan_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
+            siddhi_api_core_inst.addSiddhiAppRuntimeQueryCallback(self.siddhi_app_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
         elif isinstance(queryCallback, StreamCallback):
-            siddhi_api_core_inst.addSiddhiAppRuntimeStreamCallback(self.execution_plan_runtime_proxy, queryName,
+            siddhi_api_core_inst.addSiddhiAppRuntimeStreamCallback(self.siddhi_app_runtime_proxy, queryName,
                                                                  queryCallback._stream_callback_proxy)
         else:
             raise NotImplementedError("Unknown type of callback")
@@ -35,15 +35,15 @@ class SiddhiAppRuntime(object):
         Start SiddhiAppRuntime
         :return: void
         '''
-        self.execution_plan_runtime_proxy.start()
+        self.siddhi_app_runtime_proxy.start()
 
     def shutdown(self):
         '''
         Shutdown SiddhiAppRuntime
         :return:
         '''
-        self.execution_plan_runtime_proxy.shutdown()
-        del self.execution_plan_runtime_proxy
+        self.siddhi_app_runtime_proxy.shutdown()
+        del self.siddhi_app_runtime_proxy
 
     def getInputHandler(self, streamId):
         '''
@@ -51,36 +51,36 @@ class SiddhiAppRuntime(object):
         :param streamId: stream id of stream
         :return: InputHandler
         '''
-        input_handler_proxy = self.execution_plan_runtime_proxy.getInputHandler(streamId)
+        input_handler_proxy = self.siddhi_app_runtime_proxy.getInputHandler(streamId)
         return InputHandler._fromInputHandlerProxy(input_handler_proxy)
 
     def debug(self):
         '''
-        Retrieve the Siddhi Debugger used to debug the Execution Plan
+        Retrieve the Siddhi Debugger used to debug the Siddhi app
         :return: SiddhiDebugger
         '''
         #Obtain debugger proxy class
-        siddhi_debugger_proxy = self.execution_plan_runtime_proxy.debug()
+        siddhi_debugger_proxy = self.siddhi_app_runtime_proxy.debug()
         return SiddhiDebugger._fromSiddhiDebuggerProxy(siddhi_debugger_proxy)
 
 
     @classmethod
-    def _fromSiddhiAppRuntimeProxy(cls, execution_plan_runtime_proxy):
+    def _fromSiddhiAppRuntimeProxy(cls, siddhi_app_runtime_proxy):
         '''
         Internal Constructor to wrap around JAVA Class SiddhiAppRuntime
-        :param execution_plan_runtime_proxy:
+        :param siddhi_app_runtime_proxy:
         :return:
         '''
         instance = cls.__new__(cls)
-        instance.execution_plan_runtime_proxy = execution_plan_runtime_proxy
+        instance.siddhi_app_runtime_proxy = siddhi_app_runtime_proxy
         return instance
 
     def getName(self):
         '''
-        Returns name of ExecutionPlanContext
+        Returns name of SiddhiAppContext
         :return: 
         '''
-        return self.execution_plan_runtime_proxy.getName()
+        return self.siddhi_app_runtime_proxy.getName()
 
     #TODO: wrap Future
     def persist(self):
@@ -88,7 +88,7 @@ class SiddhiAppRuntime(object):
         Persists state
         :return: 
         '''
-        return self.execution_plan_runtime_proxy.persist()
+        return self.siddhi_app_runtime_proxy.persist()
 
     def restoreRevision(self, revision):
         '''
@@ -96,20 +96,20 @@ class SiddhiAppRuntime(object):
         :param revision: Revision
         :return: 
         '''
-        self.execution_plan_runtime_proxy.restoreRevision(revision)
+        self.siddhi_app_runtime_proxy.restoreRevision(revision)
 
     def restoreLastRevision(self):
         '''
         Restores last revision
         :return: 
         '''
-        self.execution_plan_runtime_proxy.restoreLastRevision()
+        self.siddhi_app_runtime_proxy.restoreLastRevision()
 
     def snapshot(self):
         '''
         Obtains snapshot 
         :return: byteArray
         '''
-        return self.execution_plan_runtime_proxy.snapshot()
+        return self.siddhi_app_runtime_proxy.snapshot()
 
 

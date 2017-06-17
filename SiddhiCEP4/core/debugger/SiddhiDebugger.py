@@ -112,14 +112,14 @@ class SiddhiDebugger:
 
 
     def __init__(self):
-        #TODO: Require ExecutionPlanContext to implement constructor
+        #TODO: Require SiddhiAppContext to implement constructor
         raise NotImplementedError("Not Implemented")
 
     @classmethod
     def _fromSiddhiDebuggerProxy(cls, siddhi_debugger_proxy):
         '''
         Internal Constructor to wrap around JAVA Class SiddhiDebugger
-        :param execution_plan_runtime_proxy:
+        :param siddhi_app_runtime_proxy:
         :return:
         '''
         instance = cls.__new__(cls)

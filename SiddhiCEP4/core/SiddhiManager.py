@@ -8,15 +8,15 @@ class SiddhiManager:
         ''Initialize a new SiddhiManager
         '''
         self._siddhi_manager_proxy =  siddhi_api_core_inst.initSiddhiManager()
-    def createSiddhiAppRuntime(self,executionPlan):
+    def createSiddhiAppRuntime(self,siddhiApp):
         '''
-        Create an Execution Plan Runtime
-        :param executionPlan: SiddhiQuery (string) defining execution plan
+        Create an Siddhi app Runtime
+        :param siddhiApp: SiddhiQuery (string) defining siddhi app
         :return: SiddhiAppRuntime
         '''
 
-        execution_plan_runtime_proxy = self._siddhi_manager_proxy.createSiddhiAppRuntime(executionPlan)
-        return SiddhiAppRuntime._fromSiddhiAppRuntimeProxy(execution_plan_runtime_proxy)
+        siddhi_app_runtime_proxy = self._siddhi_manager_proxy.createSiddhiAppRuntime(siddhiApp)
+        return SiddhiAppRuntime._fromSiddhiAppRuntimeProxy(siddhi_app_runtime_proxy)
 
     def persist(self):
         '''

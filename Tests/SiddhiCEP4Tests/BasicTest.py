@@ -17,10 +17,10 @@ class BasicTests(unittest.TestCase):
     def setUp(self):
         # Creating SiddhiManager
         self.siddhiManager = SiddhiManager()
-        self.executionPlan = "" + "define stream cseEventStream (symbol string, price float, volume long); " + "" + "@info(name = 'query1') " + "from cseEventStream[volume < 150] " + "select symbol,price " + "insert into outputStream ;"
+        self.siddhiApp = "" + "define stream cseEventStream (symbol string, price float, volume long); " + "" + "@info(name = 'query1') " + "from cseEventStream[volume < 150] " + "select symbol,price " + "insert into outputStream ;"
         # Generating runtime
-        print(self.executionPlan)
-        self.siddhiAppRuntime = self.siddhiManager.createSiddhiAppRuntime(self.executionPlan)
+        print(self.siddhiApp)
+        self.siddhiAppRuntime = self.siddhiManager.createSiddhiAppRuntime(self.siddhiApp)
 
     def test_input_handler(self):
         logging.info("Test1: Test Input Handler")
@@ -35,8 +35,8 @@ class BasicTests(unittest.TestCase):
         inputHandler.send(["GOOG", 50, LongType(30)])
         inputHandler.send(["IBM", 76.6, LongType(400)])
 
-    def test_execution_plan_runtime_callback(self):
-        logging.info("Test2: Test Execution Plan Runtime Callback")
+    def test_siddhi_app_runtime_callback(self):
+        logging.info("Test2: Test Siddhi App Runtime Callback")
         # Adding callback to retrieve output events from query
 
         global hitCount
