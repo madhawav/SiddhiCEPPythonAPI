@@ -65,4 +65,47 @@ class ExecutionPlanRuntime(object):
         instance.execution_plan_runtime_proxy = execution_plan_runtime_proxy
         return instance
 
+    def getName(self):
+        '''
+        Returns name of ExecutionPlanContext
+        :return: 
+        '''
+        return self.execution_plan_runtime_proxy.getName()
 
+
+    def persist(self):
+        '''
+        Persists state
+        :return: 
+        '''
+        return self.execution_plan_runtime_proxy.persist()
+
+    def restoreRevision(self, revision):
+        '''
+        Restores revision
+        :param revision: Revision as a String
+        :return: 
+        '''
+        self.execution_plan_runtime_proxy.restoreRevision(revision)
+
+    def restoreLastRevision(self):
+        '''
+        Restores last revision
+        :return: 
+        '''
+        self.execution_plan_runtime_proxy.restoreLastRevision()
+
+    def snapshot(self):
+        '''
+        Obtains snapshot 
+        :return: byteArray
+        '''
+        return self.execution_plan_runtime_proxy.snapshot()
+
+    def restore(self, snapshot):
+        '''
+        Restores snapshot
+        :param snapshot: byteArray
+        :return: 
+        '''
+        self.execution_plan_runtime_proxy.restore(snapshot)
