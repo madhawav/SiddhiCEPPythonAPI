@@ -4,17 +4,13 @@ from time import sleep
 
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 from SiddhiCEP3.DataTypes.LongType import LongType
-from SiddhiCEP3.core.SiddhiManager import SiddhiManager
 from SiddhiCEP3.core.event.Event import Event
-from SiddhiCEP3.core.query.output.callback.QueryCallback import QueryCallback
-from SiddhiCEP3.core.util.EventPrinter import PrintEvent
 
 
 class BasicTests(unittest.TestCase):
-    def setUp(self):
-        logging.basicConfig(level=logging.INFO)
-
     def test_data(self):
         logging.info("Test GetData and SetData Methods")
 

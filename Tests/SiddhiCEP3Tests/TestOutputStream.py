@@ -1,6 +1,8 @@
 import unittest
+
 import logging
-from distutils import log
+logging.basicConfig(level=logging.INFO)
+
 from time import sleep
 from unittest.case import TestCase
 
@@ -13,7 +15,6 @@ class TestDebugger(TestCase):
     def setUp(self):
         self.inEventCount = AtomicInt(0)
         self.debugEventCount = AtomicInt(0)
-        logging.basicConfig(level=logging.INFO)
 
     def getCount(self, event):
         count = 0

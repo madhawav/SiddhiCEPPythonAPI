@@ -1,4 +1,9 @@
 import unittest
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 from multiprocessing import Lock
 from time import sleep
 
@@ -17,6 +22,7 @@ class BasicTests(unittest.TestCase):
         self.executionPlanRuntime = self.siddhiManager.createExecutionPlanRuntime(self.executionPlan)
 
     def test_input_handler(self):
+        logging.info("Test1: Test Input Handler")
         # Retrieving input handler to push events into Siddhi
         inputHandler = self.executionPlanRuntime.getInputHandler("cseEventStream")
         # Starting event processing
@@ -29,8 +35,8 @@ class BasicTests(unittest.TestCase):
         inputHandler.send(["IBM", 76.6, LongType(400)])
 
     def test_execution_plan_runtime_callback(self):
+        logging.info("Test2: Test Execution Plan Runtime Callback")
         # Adding callback to retrieve output events from query
-        lock = Lock()
 
         global hitCount
         hitCount = 2
@@ -40,9 +46,6 @@ class BasicTests(unittest.TestCase):
                 PrintEvent(timestamp, inEvents, outEvents)
                 global hitCount
                 hitCount -= 1
-
-        #_concrete_query_callback = ConcreteQueryCallback()
-        #self.executionPlanRuntime.addCallback("query1", _concrete_query_callback)
 
         self.executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
 

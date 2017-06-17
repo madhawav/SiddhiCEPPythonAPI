@@ -8,14 +8,11 @@ class PostInstallCommand(install):
     """Post-installation for installation mode."""
 
     def run(self):
-        print("Pre-install")
         # Compile JAVA Code here
         check_call("mvn install".split(),cwd="SiddhiCEP3/ProxyClasses/SiddhiCEP3Proxy/")
         check_call("mvn install".split(), cwd="SiddhiCEP4/ProxyClasses/SiddhiCEP4Proxy/")
 
         install.run(self)
-
-        print("Post-install")
 
 
 packages = find_packages()

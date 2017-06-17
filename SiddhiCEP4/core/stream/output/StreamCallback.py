@@ -41,7 +41,7 @@ class StreamCallback(metaclass=ABCMeta):
             @java_method(signature='()V', name="gc")
             def gc(self):
                 _created_instances.remove(stream_callback_self)
-                logging.trace("Java Reported GC Collected Stream Callback")
+                logging.info("Java Reported GC Collected Stream Callback")
 
         self._receive_callback_ref = ReceiveCallback() #Hold reference to prevent python from GC callback before java does
         self._stream_callback_proxy.setReceiveCallback(self._receive_callback_ref)

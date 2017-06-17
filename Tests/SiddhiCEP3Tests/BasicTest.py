@@ -8,6 +8,10 @@ from SiddhiCEP3.core.query.output.callback.QueryCallback import QueryCallback
 from SiddhiCEP3.core.util.EventPrinter import PrintEvent
 
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 class BasicTests(unittest.TestCase):
     def setUp(self):
         # Creating SiddhiManager
@@ -17,6 +21,8 @@ class BasicTests(unittest.TestCase):
         self.executionPlanRuntime = self.siddhiManager.createExecutionPlanRuntime(self.executionPlan)
 
     def test_input_handler(self):
+        logging.info("Test1: Test Input Handler")
+
         # Retrieving input handler to push events into Siddhi
         inputHandler = self.executionPlanRuntime.getInputHandler("cseEventStream")
         # Starting event processing
@@ -30,6 +36,7 @@ class BasicTests(unittest.TestCase):
         inputHandler.send(["WSO2", 45.6, LongType(50)])
 
     def test_execution_plan_runtime_callback(self):
+        logging.info("Test2: Test Execution Plan Runtime Callback")
         # Adding callback to retrieve output events from query
         lock = Lock()
 

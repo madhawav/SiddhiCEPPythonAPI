@@ -4,6 +4,8 @@ from time import sleep
 
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 from SiddhiCEP4.DataTypes.LongType import LongType
 from SiddhiCEP4.core.SiddhiManager import SiddhiManager
 from SiddhiCEP4.core.event.Event import Event
@@ -12,15 +14,12 @@ from SiddhiCEP4.core.util.EventPrinter import PrintEvent
 
 
 class BasicTests(unittest.TestCase):
-    def setUp(self):
-        logging.basicConfig(level=logging.INFO)
 
     def test_data(self):
         logging.info("Test GetData and SetData Methods")
 
         event = Event(1, [2, LongType(3)])
         self.assertListEqual(event.getData(),[2,LongType(3)],"GetData not equal to data given in constructor")
-        logging.info(type(event.getData(1)))
         self.assertTrue(type(event.getData(1)) == LongType,"Type of Parameter is not LongType")
 
         event.setData([1, 2])

@@ -7,7 +7,7 @@
 
 JNIEXPORT void JNICALL Java_org_wso2_siddhi_pythonapi_threadfix_PyThreadFix_fixThread(JNIEnv *env, jobject thisObj)
 {
-   printf("Thread issue fixing...\n");
+   //printf("Thread issue fixing...\n");
 
    PyGILState_STATE state;
 
@@ -18,11 +18,11 @@ JNIEXPORT void JNICALL Java_org_wso2_siddhi_pythonapi_threadfix_PyThreadFix_fixT
    state = PyGILState_Ensure();
    PyGILState_Release(state);
 
-   printf("Thread issue fixed\n");
+   //printf("Thread issue fixed\n");
 
    return;
 }
 
 int main(){
-    printf("Main Called");
+    //printf("Main Called");
 }
