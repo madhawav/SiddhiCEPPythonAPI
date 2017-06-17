@@ -3,7 +3,7 @@ The scope of this project is to develop a Python Wrapper on Siddhi CEP Library. 
 
 This is currently a work in progress, as a project for Google Summer of Code 2017 Program.
 
-*Note: Currently the API is configured with Siddhi CEP 3.1.0 and Siddhi CEP 4.0.0-M7 for Python 3.x*
+*Note: Currently the API is configured with __Siddhi CEP 3.1.0__ and __Siddhi CEP 4.0.0-M7__ for __Python 2.7.x__ and __Python 3.x__*
 
 Project Goals
 -----
@@ -21,11 +21,11 @@ Currently, the project is in very early stage with discussions on the scope.
 Installing the Library from Source
 -----
 1. Install following pre-requisites.
-    - Python 3.x
+    - Python 2.7 or 3.x
     - Cython (`sudo apt-get install cython`)
     - Pyjnius (`sudo pip install pyjnius`)
-    - Python3 Developer Package (`sudo apt-get install python-dev python3-dev`)
-    - libboost for Python3 (`sudo apt-get install libboost-python-dev`)
+    - Python Developer Package (`sudo apt-get install python-dev python3-dev python2-dev`)
+    - libboost for Python (`sudo apt-get install libboost-python-dev`)
     - Maven and Java 8
     - g++ and other development tools 
       - `sudo apt-get install build-essential g++ autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev`
@@ -33,7 +33,7 @@ Installing the Library from Source
 2. Install using Setup.py.
     - Navigate to project root and run `sudo pip3 install .`
 
-3. Use the Library using Python 3.
+3. Use the Library using Python.
     - For Siddhi CEP 3.1
     ```python
     from SiddhiCEP3.core.SiddhiManager import SiddhiManager
