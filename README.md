@@ -32,7 +32,7 @@ Installing the Library from Source
 3. Use the Library using Python 3.
     - For Siddhi CEP 3.1
     ```python
-    from SiddhiCEP3.SiddhiCEP3 import SiddhiManager
+    from SiddhiCEP3.core.SiddhiManager import SiddhiManager
     sm = SiddhiManager()
     ....
     sm.shutdown()
@@ -40,7 +40,7 @@ Installing the Library from Source
 
     - For Siddhi CEP 4.0-M5
     ```python
-    from SiddhiCEP4.SiddhiCEP4 import SiddhiManager
+    from SiddhiCEP4.core.SiddhiManager import SiddhiManager
     sm = SiddhiManager()
     ....
     sm.shutdown()
