@@ -944,4 +944,3 @@ if __name__ == '__main__':
 
 #TODO: Test 11: Improve write-backs
 #TODO: Add a test on ComplexEvent
-#TODO: Wrap Event

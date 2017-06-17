@@ -23,6 +23,7 @@ class TestOutputStream(TestCase):
         return count
 
     def test_outputstram(self):
+        logging.info("OutputStream Test 1: Test reception of events")
         siddhiManager = SiddhiManager()
         cseEventStream = "@config(async = 'true') define stream cseEventStream (symbol string, price float, volume int);"
 
@@ -45,7 +46,7 @@ class TestOutputStream(TestCase):
 
         sleep(1)
 
-        _self_shaddow.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
+        _self_shaddow.assertEqual(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
 
 
         executionPlanRuntime.shutdown()
