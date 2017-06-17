@@ -61,7 +61,7 @@ Running the Tests
 
 Background
 -----
-Siddhi CEP is a Query Language and a Library for Realtime Streaming Complex Event Processing developed by WSO2 Inc. Siddhi CEP is currently used in WSO2 Data Analytics Server, an Enterprise Level Open Source Data Analytics Solution.
+Siddhi is a Query Language and a Library for Realtime Streaming Complex Event Processing developed by WSO2 Inc. Siddhi CEP is currently used in WSO2 Data Analytics Server, an Enterprise Level Open Source Data Analytics Solution.
 
 Further information on above products are available in the links below.
 
