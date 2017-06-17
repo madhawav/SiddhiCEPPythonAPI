@@ -19,14 +19,15 @@ class BasicTests(unittest.TestCase):
         self.siddhiManager = SiddhiManager()
         self.executionPlan = "" + "define stream cseEventStream (symbol string, price float, volume long); " + "" + "@info(name = 'query1') " + "from cseEventStream[volume < 150] " + "select symbol,price " + "insert into outputStream ;"
         # Generating runtime
-        self.executionPlanRuntime = self.siddhiManager.createExecutionPlanRuntime(self.executionPlan)
+        print(self.executionPlan)
+        self.siddhiAppRuntime = self.siddhiManager.createSiddhiAppRuntime(self.executionPlan)
 
     def test_input_handler(self):
         logging.info("Test1: Test Input Handler")
         # Retrieving input handler to push events into Siddhi
-        inputHandler = self.executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = self.siddhiAppRuntime.getInputHandler("cseEventStream")
         # Starting event processing
-        self.executionPlanRuntime.start()
+        self.siddhiAppRuntime.start()
 
         # Sending events to Siddhi
         inputHandler.send(["IBM", 700.0, LongType(100)])
@@ -47,12 +48,12 @@ class BasicTests(unittest.TestCase):
                 global hitCount
                 hitCount -= 1
 
-        self.executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
+        self.siddhiAppRuntime.addCallback("query1", ConcreteQueryCallback())
 
         # Retrieving input handler to push events into Siddhi
-        inputHandler = self.executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = self.siddhiAppRuntime.getInputHandler("cseEventStream")
         # Starting event processing
-        self.executionPlanRuntime.start()
+        self.siddhiAppRuntime.start()
 
         # Sending events to Siddhi
         inputHandler.send(["IBM", 700.0, LongType(100)])
@@ -65,7 +66,7 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(hitCount,0)
     def tearDown(self):
         # shutting down the runtime
-        self.executionPlanRuntime.shutdown()
+        self.siddhiAppRuntime.shutdown()
 
         # shutting down Siddhi
         self.siddhiManager.shutdown()

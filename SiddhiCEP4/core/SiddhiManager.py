@@ -1,5 +1,5 @@
 from SiddhiCEP4.core import siddhi_api_core_inst
-from SiddhiCEP4.core.ExecutionPlanRuntime import ExecutionPlanRuntime
+from SiddhiCEP4.core.SiddhiAppRuntime import SiddhiAppRuntime
 
 
 class SiddhiManager:
@@ -8,14 +8,15 @@ class SiddhiManager:
         ''Initialize a new SiddhiManager
         '''
         self._siddhi_manager_proxy =  siddhi_api_core_inst.initSiddhiManager()
-    def createExecutionPlanRuntime(self,executionPlan):
+    def createSiddhiAppRuntime(self,executionPlan):
         '''
         Create an Execution Plan Runtime
         :param executionPlan: SiddhiQuery (string) defining execution plan
-        :return: ExecutionPlanRuntime
+        :return: SiddhiAppRuntime
         '''
-        execution_plan_runtime_proxy = self._siddhi_manager_proxy.createExecutionPlanRuntime(executionPlan)
-        return ExecutionPlanRuntime._fromExecutionPlanRuntimeProxy(execution_plan_runtime_proxy)
+
+        execution_plan_runtime_proxy = self._siddhi_manager_proxy.createSiddhiAppRuntime(executionPlan)
+        return SiddhiAppRuntime._fromSiddhiAppRuntimeProxy(execution_plan_runtime_proxy)
 
     def persist(self):
         '''

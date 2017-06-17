@@ -9,7 +9,7 @@ input_handler_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.stream.inp
 
 class InputHandler(object):
     def __init__(self):
-        raise NotImplementedError("Initialize InputHandler using ExecutionPlanRuntime")
+        raise NotImplementedError("Initialize InputHandler using SiddhiAppRuntime")
 
     def __new__(cls):
         bare_instance = object.__new__(cls)

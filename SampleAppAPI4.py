@@ -12,7 +12,7 @@ siddhiManager = SiddhiManager()
 executionPlan = "" + "define stream cseEventStream (symbol string, price float, volume long); " + "" +"@info(name = 'query1') " +"from cseEventStream[volume < 150] " +"select symbol,price " + "insert into outputStream ;"
 
 # Generating runtime
-executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(executionPlan)
+siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(executionPlan)
 l = RLock()
 l.acquire()
 count = 3
@@ -26,13 +26,13 @@ class ConcreteQueryCallback(QueryCallback):
         count = count-1
         l.release()
 
-executionPlanRuntime.addCallback("query1",ConcreteQueryCallback())
+siddhiAppRuntime.addCallback("query1",ConcreteQueryCallback())
 
 # Retrieving input handler to push events into Siddhi
-inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
 # Starting event processing
-executionPlanRuntime.start()
+siddhiAppRuntime.start()
 
 # Sending events to Siddhi
 inputHandler.send(["IBM",700.0,LongType(100)])
@@ -43,7 +43,7 @@ inputHandler.send(["WSO2", 45.6, LongType(50)])
 sleep(5)
 
 # shutting down the runtime
-executionPlanRuntime.shutdown()
+siddhiAppRuntime.shutdown()
 
 # shutting down Siddhi
 siddhiManager.shutdown()

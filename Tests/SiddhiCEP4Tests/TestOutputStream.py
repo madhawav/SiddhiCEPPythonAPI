@@ -31,7 +31,7 @@ class TestOutputStream(TestCase):
 
         query = "@info(name = 'query 1') from cseEventStream select symbol, price, volume insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
 
@@ -39,9 +39,9 @@ class TestOutputStream(TestCase):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", StreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
         inputHandler.send(["WSO2", 50.0, 60])
         inputHandler.send(["WSO2", 70.0, 40])
@@ -51,6 +51,6 @@ class TestOutputStream(TestCase):
         _self_shaddow.assertEqual(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
 if __name__ == '__main__':
     unittest.main()

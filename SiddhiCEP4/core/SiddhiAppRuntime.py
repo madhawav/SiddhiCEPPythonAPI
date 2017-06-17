@@ -7,9 +7,9 @@ from SiddhiCEP4.core.stream.input.InputHandler import InputHandler
 from SiddhiCEP4.core.stream.output.StreamCallback import StreamCallback
 
 
-class ExecutionPlanRuntime(object):
+class SiddhiAppRuntime(object):
     def __init__(self,):
-        raise NotImplementedError("Initialize ExecutionPlanRuntime using Siddhi Manager")
+        raise NotImplementedError("Initialize SiddhiAppRuntime using Siddhi Manager")
 
     def __new__(cls):
         bare_instance = object.__new__(cls)
@@ -18,28 +18,28 @@ class ExecutionPlanRuntime(object):
 
     def addCallback(self, queryName, queryCallback):
         '''
-        Assign callback interface to ExecutionPlanRuntime
+        Assign callback interface to SiddhiAppRuntime
         :param queryName:
         :param queryCallback:
         :return:
         '''
         if isinstance(queryCallback, QueryCallback):
-            siddhi_api_core_inst.addExecutionPlanRuntimeQueryCallback(self.execution_plan_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
+            siddhi_api_core_inst.addSiddhiAppRuntimeQueryCallback(self.execution_plan_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
         elif isinstance(queryCallback, StreamCallback):
-            siddhi_api_core_inst.addExecutionPlanRuntimeStreamCallback(self.execution_plan_runtime_proxy, queryName,
+            siddhi_api_core_inst.addSiddhiAppRuntimeStreamCallback(self.execution_plan_runtime_proxy, queryName,
                                                                  queryCallback._stream_callback_proxy)
         else:
             raise NotImplementedError("Unknown type of callback")
     def start(self):
         '''
-        Start ExecutionPlanRuntime
+        Start SiddhiAppRuntime
         :return: void
         '''
         self.execution_plan_runtime_proxy.start()
 
     def shutdown(self):
         '''
-        Shutdown ExecutionPlanRuntime
+        Shutdown SiddhiAppRuntime
         :return:
         '''
         self.execution_plan_runtime_proxy.shutdown()
@@ -65,9 +65,9 @@ class ExecutionPlanRuntime(object):
 
 
     @classmethod
-    def _fromExecutionPlanRuntimeProxy(cls, execution_plan_runtime_proxy):
+    def _fromSiddhiAppRuntimeProxy(cls, execution_plan_runtime_proxy):
         '''
-        Internal Constructor to wrap around JAVA Class ExecutionPlanRuntime
+        Internal Constructor to wrap around JAVA Class SiddhiAppRuntime
         :param execution_plan_runtime_proxy:
         :return:
         '''

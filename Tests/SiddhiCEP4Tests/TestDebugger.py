@@ -38,7 +38,7 @@ class TestDebugger(TestCase):
 
         query = "@info(name = 'query 1') from cseEventStream select symbol, price, volume insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
 
@@ -47,11 +47,11 @@ class TestDebugger(TestCase):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
 
-        executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl()) #Causes GC Error
+        siddhiAppRuntime.addCallback("OutputStream", StreamCallbackImpl()) #Causes GC Error
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
         siddhiDebugger.acquireBreakPoint("query 1", SiddhiDebugger.QueryTerminal.IN)
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
@@ -89,7 +89,7 @@ class TestDebugger(TestCase):
         self.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
         self.assertEquals(4, _self_shaddow.debugEventCount.get(),"Invalid number of debug events")
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
@@ -101,18 +101,18 @@ class TestDebugger(TestCase):
         cseEventStream = "@config(async = 'true') define stream cseEventStream (symbol string, price float, volume int);"
         query = "@info(name = 'query1') from cseEventStream#window.lengthBatch(3) select symbol, price, volume insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -149,7 +149,7 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.inEventCount.get(),"Invalid number of output events")
         self.assertEquals(6, self.debugEventCount.get(),"Invalid number of debug events")
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
@@ -161,18 +161,18 @@ class TestDebugger(TestCase):
         cseEventStream = "define stream cseEventStream (symbol string, price float, volume int);"
         query = "@info(name = 'query1')" + "from cseEventStream#window.timeBatch(3 sec) " +  "select symbol, price, volume " + "insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -211,7 +211,7 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
@@ -226,7 +226,7 @@ class TestDebugger(TestCase):
                 "select symbol, price, volume " + \
                 "insert into OutputStream;"
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
@@ -234,11 +234,11 @@ class TestDebugger(TestCase):
                 _self_shaddow.inEventCount.addAndGet(len(events))
                 _self_shaddow.assertEquals(1, len(events),"Cannot emit all three in one time")
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -265,7 +265,7 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.inEventCount.get(),"Invalid number of output events")
         self.assertEquals(3, self.debugEventCount.get(),"Invalid number of debug events")
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
     def test_debugger5(self):
@@ -280,18 +280,18 @@ class TestDebugger(TestCase):
                 "select symbol, price, volume " + \
                 "insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -324,7 +324,7 @@ class TestDebugger(TestCase):
         self.assertEquals(2, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
     def test_debugger6(self):
@@ -339,18 +339,18 @@ class TestDebugger(TestCase):
                 "select symbol, price, volume " + \
                 "insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -388,7 +388,7 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
@@ -403,18 +403,18 @@ class TestDebugger(TestCase):
                 "select symbol, price, volume " + \
                 "insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -453,7 +453,7 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
@@ -469,18 +469,18 @@ class TestDebugger(TestCase):
                 "select symbol, price, volume " + \
                 "insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -510,7 +510,7 @@ class TestDebugger(TestCase):
         self.assertEquals(3, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
     def test_debugger9(self):
@@ -525,7 +525,7 @@ class TestDebugger(TestCase):
                 "select symbol, price, sum(volume) as volume " + \
                 "insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
 
@@ -533,11 +533,11 @@ class TestDebugger(TestCase):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -574,7 +574,7 @@ class TestDebugger(TestCase):
         self.assertEquals(2, self.inEventCount.get(), "Invalid number of output events")
         self.assertEquals(4, self.debugEventCount.get(), "Invalid number of debug events")
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
@@ -597,18 +597,18 @@ class TestDebugger(TestCase):
                 "insert into OutputStream;"
 
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -649,7 +649,7 @@ class TestDebugger(TestCase):
         self.assertEquals(8, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
@@ -672,18 +672,18 @@ class TestDebugger(TestCase):
                 "insert into OutputStream;"
 
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
+        siddhiAppRuntime.addCallback("OutputStream", OutputStreamCallbackImpl())
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
 
@@ -720,7 +720,7 @@ class TestDebugger(TestCase):
         self.assertEquals(4, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
     def test_debugger12(self):
@@ -741,26 +741,26 @@ class TestDebugger(TestCase):
                 "select * " + \
                 "insert into OutputStream2;"
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
         class OutputStreamCallbackImpl1(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream1", OutputStreamCallbackImpl1())
+        siddhiAppRuntime.addCallback("OutputStream1", OutputStreamCallbackImpl1())
 
         class OutputStreamCallbackImpl2(StreamCallback):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream2", OutputStreamCallbackImpl2())
+        siddhiAppRuntime.addCallback("OutputStream2", OutputStreamCallbackImpl2())
 
-        cseEventStreamInputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
-        stockEventStreamInputHandler = executionPlanRuntime.getInputHandler("stockEventStream")
+        cseEventStreamInputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
+        stockEventStreamInputHandler = siddhiAppRuntime.getInputHandler("stockEventStream")
 
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         siddhiDebugger.acquireBreakPoint("query1", SiddhiDebugger.QueryTerminal.IN)
         siddhiDebugger.acquireBreakPoint("query2", SiddhiDebugger.QueryTerminal.IN)
@@ -806,7 +806,7 @@ class TestDebugger(TestCase):
         self.assertEquals(4, self.debugEventCount.get(),"Invalid number of debug events")
 
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
     def test_set_debugger_callback(self):
@@ -817,7 +817,7 @@ class TestDebugger(TestCase):
 
         query = "@info(name = 'query 1') from cseEventStream select symbol, price, volume insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
 
@@ -825,11 +825,11 @@ class TestDebugger(TestCase):
             def receive(self, events):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
-        executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl())  # Causes GC Error
+        siddhiAppRuntime.addCallback("OutputStream", StreamCallbackImpl())  # Causes GC Error
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         #Callback1
         class SiddhiDebuggerCallbackImpl1(SiddhiDebuggerCallback):
@@ -878,7 +878,7 @@ class TestDebugger(TestCase):
         self.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
         self.assertEquals(2, _self_shaddow.debugEventCount.get(), "Invalid number of debug events")
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
     def test_acquire_release_breakpoint(self):
@@ -889,7 +889,7 @@ class TestDebugger(TestCase):
 
         query = "@info(name = 'query 1') from cseEventStream select symbol, price, volume insert into OutputStream; "
 
-        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(cseEventStream + query)
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(cseEventStream + query)
 
         _self_shaddow = self
 
@@ -898,11 +898,11 @@ class TestDebugger(TestCase):
                 _self_shaddow.inEventCount.addAndGet(len(events))
 
 
-        executionPlanRuntime.addCallback("OutputStream", StreamCallbackImpl()) #Causes GC Error
+        siddhiAppRuntime.addCallback("OutputStream", StreamCallbackImpl()) #Causes GC Error
 
-        inputHandler = executionPlanRuntime.getInputHandler("cseEventStream")
+        inputHandler = siddhiAppRuntime.getInputHandler("cseEventStream")
 
-        siddhiDebugger = executionPlanRuntime.debug()
+        siddhiDebugger = siddhiAppRuntime.debug()
 
         class SiddhiDebuggerCallbackImpl(SiddhiDebuggerCallback):
             def debugEvent(self, event, queryName,queryTerminal, debugger):
@@ -938,7 +938,7 @@ class TestDebugger(TestCase):
         self.assertEquals(2, _self_shaddow.inEventCount.get(), "Invalid number of output events")
         self.assertEquals(1, _self_shaddow.debugEventCount.get(),"Invalid number of debug events")
 
-        executionPlanRuntime.shutdown()
+        siddhiAppRuntime.shutdown()
         siddhiManager.shutdown()
 
 
