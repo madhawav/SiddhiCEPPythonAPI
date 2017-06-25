@@ -11,6 +11,11 @@ if "siddhi_api_configured" in globals():
 
 #Add Java library to class path of jvm
 import jnius_config
+
+#NOTE: The following code-line is required on Linux Kernel 4.4.0-81-generic and above to avoid segmentation fault at
+#initialization of pyjnius
+jnius_config.add_options('-Xss1280k')
+
 jnius_config.add_options('-Djava.library.path=' + source_path + "/")
 jnius_config.set_classpath('.', source_path + '/ProxyClasses/SiddhiCEP4Proxy/target/lib/*',source_path + '/ProxyClasses/SiddhiCEP4Proxy/target/*')
 global siddhi_api_configured
