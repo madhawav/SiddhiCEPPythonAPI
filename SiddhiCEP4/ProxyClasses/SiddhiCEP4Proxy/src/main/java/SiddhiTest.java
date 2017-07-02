@@ -6,8 +6,11 @@ import org.wso2.siddhi.core.debugger.SiddhiDebuggerCallback;
 import org.wso2.siddhi.core.event.ComplexEvent;
 import org.wso2.siddhi.core.event.Event;
 import org.wso2.siddhi.core.event.stream.StreamEvent;
+import org.wso2.siddhi.core.query.output.callback.QueryCallback;
 import org.wso2.siddhi.core.stream.input.InputHandler;
 import org.wso2.siddhi.core.stream.output.StreamCallback;
+import org.wso2.siddhi.core.util.EventPrinter;
+import org.wso2.siddhi.core.util.SiddhiTestHelper;
 
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -217,6 +220,38 @@ public class SiddhiTest {
         siddhiAppRuntime.shutdown();
     }
 
+    public void testExtension() throws InterruptedException {
+        log.info("ContainsFunctionExtensionTestCase TestCase");
+        SiddhiManager siddhiManager = new SiddhiManager();
+
+        String inStreamDefinition = "define stream inputStream (symbol string, price long, " +
+                "volume long);";
+        String query = ("@info(name = 'query1') " +
+                "from inputStream " +
+                "select symbol , str:contains(symbol, 'WSO2') as isContains " +
+                "insert into outputStream;");
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(inStreamDefinition +
+                query);
+
+        siddhiAppRuntime.addCallback("query1", new QueryCallback() {
+            @Override
+            public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
+                EventPrinter.print(timeStamp, inEvents, removeEvents);
+                for (Event inEvent : inEvents) {
+                    System.out.println(inEvent);
+                }
+            }
+        });
+
+        InputHandler inputHandler = siddhiAppRuntime.getInputHandler("inputStream");
+        siddhiAppRuntime.start();
+        inputHandler.send(new Object[]{"IBM", 700f, 100L});
+        inputHandler.send(new Object[]{"WSO2", 60.5f, 200L});
+        inputHandler.send(new Object[]{"One of the best middleware is from WSO2.", 60.5f, 200L});
+        Thread.sleep(100);
+        siddhiAppRuntime.shutdown();
+    }
+
     public void testSetCallback() throws InterruptedException {
         log.info("Siddi Debugger Test 1: Test next traversal in a simple query");
 
@@ -331,12 +366,9 @@ public class SiddhiTest {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        SiddhiManager sm = new SiddhiManager();
-        String query = "@config(async = 'true') define stream cseEventStream (symbol string, price float, volume int);@info(name = 'query 1') from cseEventStream select symbol, price, volume insert into OutputStream;";
-        SiddhiAppRuntime runtime = sm.createSiddhiAppRuntime(query);
 
        SiddhiTest st = new SiddhiTest();
        st.init();
-       st.testSetCallback();
+       st.testExtension();
     }
 }

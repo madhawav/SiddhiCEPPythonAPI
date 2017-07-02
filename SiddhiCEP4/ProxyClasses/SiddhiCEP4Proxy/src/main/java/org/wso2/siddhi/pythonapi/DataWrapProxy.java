@@ -1,5 +1,7 @@
 package org.wso2.siddhi.pythonapi;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 /**
  * Created by madhawa on 6/1/17.
  */
@@ -11,6 +13,10 @@ public class DataWrapProxy {
      */
     private Object data;
     public DataWrapProxy(int data)
+    {
+        this.data = data;
+    }
+    public DataWrapProxy(boolean data)
     {
         this.data = data;
     }
@@ -47,6 +53,9 @@ public class DataWrapProxy {
     public boolean isFloat(){
         return this.data instanceof Float;
     }
+    public boolean isBoolean(){
+        return this.data instanceof Boolean;
+    }
     public boolean isString(){
         return this.data instanceof String;
     }
@@ -76,6 +85,8 @@ public class DataWrapProxy {
             return new DataWrapProxy((String)data);
         else if(data instanceof Float)
             return new DataWrapProxy((Float)data);
+        else if(data instanceof Boolean)
+            return new DataWrapProxy((Boolean)data);
         throw new RuntimeException("Unsupported Data Type");
     }
 

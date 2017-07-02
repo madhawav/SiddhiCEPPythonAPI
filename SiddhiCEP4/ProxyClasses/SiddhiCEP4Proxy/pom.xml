@@ -15,6 +15,12 @@
             <version>4.0.0-M7</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.wso2.extension.siddhi.execution.string</groupId>
+            <artifactId>siddhi-execution-string</artifactId>
+            <version>4.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

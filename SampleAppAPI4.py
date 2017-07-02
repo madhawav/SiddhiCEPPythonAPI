@@ -9,10 +9,10 @@ from SiddhiCEP4.core.query.output.callback.QueryCallback import QueryCallback
 from SiddhiCEP4.core.util.EventPrinter import PrintEvent
 
 siddhiManager = SiddhiManager()
-executionPlan = "" + "define stream cseEventStream (symbol string, price float, volume long); " + "" +"@info(name = 'query1') " +"from cseEventStream[volume < 150] " +"select symbol,price " + "insert into outputStream ;"
+siddhiApp = "" + "define stream cseEventStream (symbol string, price float, volume long); " + "" +"@info(name = 'query1') " +"from cseEventStream[volume < 150] " +"select symbol,price " + "insert into outputStream ;"
 
 # Generating runtime
-siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(executionPlan)
+siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(siddhiApp)
 l = RLock()
 l.acquire()
 count = 3
