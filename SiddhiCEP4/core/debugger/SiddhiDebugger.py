@@ -15,8 +15,8 @@ from SiddhiCEP4.core.event.ComplexEvent import ComplexEvent
 class SiddhiDebugger(object):
 
     class QueryTerminal(Enum):
-        IN = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().IN()
-        OUT = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().OUT()
+        IN = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().IN()
+        OUT = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().OUT()
 
         @classmethod
         def _map_value(cls, queryTerminalProxy):

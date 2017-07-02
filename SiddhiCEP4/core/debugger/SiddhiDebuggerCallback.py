@@ -8,7 +8,7 @@ from future.utils import with_metaclass
 
 from SiddhiCEP4 import SiddhiLoader
 
-_siddhi_debugger_callback_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger_callback.SiddhiDebuggerCallbackProxy")
+_siddhi_debugger_callback_proxy = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger_callback.SiddhiDebuggerCallbackProxy")
 
 class SiddhiDebuggerCallback(with_metaclass(ABCMeta,object)):
     def __init__(self):

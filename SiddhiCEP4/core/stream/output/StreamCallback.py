@@ -11,7 +11,7 @@ from SiddhiCEP4.core.event.Event import Event
 
 from future.utils import with_metaclass
 
-_stream_callback_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy")
+_stream_callback_proxy = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy")
 
 _lock = RLock()
 

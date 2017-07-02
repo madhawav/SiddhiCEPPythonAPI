@@ -49,7 +49,7 @@ def wrapDataItem(d):
     :param d: 
     :return: 
     '''
-    wrapped_data_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.DataWrapProxy")
+    wrapped_data_proxy = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.DataWrapProxy")
     wrapped_data = None
     if d is None:
         #Constructor for null type

@@ -1,6 +1,14 @@
 #!/usr/bin/python3
-from SiddhiCEP4 import DataTypes, SiddhiLoader
-SiddhiLoader.loadLibrary()
+from subprocess import call
+import os
+from SiddhiCEP4 import SiddhiLoader
+
+# Download extension jars
+call(["mvn", "install"], cwd=os.path.dirname(os.path.abspath(__file__)) + "/Extensions")
+
+# Add extensions
+extensions_path = os.path.dirname(os.path.abspath(__file__)) + "/Extensions/jars/*"
+SiddhiLoader.addExtension(extensions_path)
 
 import unittest
 import logging

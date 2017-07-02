@@ -4,6 +4,7 @@ import sys
 
 import SiddhiCEP4
 
+# Instantiate Global Variables
 siddhi_api_core = None
 siddhi_api_core_inst = None
 
@@ -11,21 +12,30 @@ _java_method = None
 _PythonJavaClass = None
 _JavaClass = None
 
-if not "siddhi_api_configured" in globals():
-    logging.info("Siddhi API Unable to resume")
-else:
-    global t_siddhi_api_core, t_siddhi_api_core_inst, t_java_method, t_PythonJavaClass, t_JavaClass
+def addExtension(class_path):
+    '''
+    Adds an Extension to Siddhi. Should be called prior to importing any Siddhi Libraries.
+    :param class_path: Path to Jar File. Wild Card (*) directory selection is accepted
+    :return: 
+    '''
+    if "siddhi_api_configured" in globals():
+        raise Exception("Cannot add extensions after loading library.")
 
-    siddhi_api_core = t_siddhi_api_core
-    siddhi_api_core_inst = t_siddhi_api_core_inst
-    _java_method = t_java_method
-    _PythonJavaClass = t_PythonJavaClass
-    _JavaClass = t_JavaClass
+    if not "extensions" in globals():
+        globals()["extensions"] = []
 
-def resumeLibrary():
+    globals()["extensions"].append(class_path)
+
+def _resumeLibrary():
+    '''
+    Resumes values of global variables from backup
+    :return: 
+    '''
     if not "siddhi_api_configured" in globals():
-        logging.info("Siddhi API Unable to resume")
+        logging.info("Premature library resume ignored")
         return
+
+    # Resume Global variables values from backup
     global t_siddhi_api_core, t_siddhi_api_core_inst, t_java_method, t_PythonJavaClass, t_JavaClass
     global siddhi_api_core, siddhi_api_core_inst, _java_method, _PythonJavaClass, _JavaClass
 
@@ -35,14 +45,21 @@ def resumeLibrary():
     _PythonJavaClass = t_PythonJavaClass
     _JavaClass = t_JavaClass
 
+# Resume global variables values from backup
+_resumeLibrary()
 
 def loadLibrary():
+    '''
+    Loads Siddi CEP Library
+    :return: 
+    '''
+
     # Test whether Java Library is already loaded
     if "siddhi_api_configured" in globals():
-        logging.info("Siddhi API already loaded")
         if globals()["siddhi_api_configured"] != 4:
-            raise ImportError("Unable to use multiple versions of Siddhi CEP Library")
-        resumeLibrary()
+            raise Exception("Unable to use multiple versions of Siddhi CEP Library")
+        #Resume global variables if already loaded
+        _resumeLibrary()
         return
 
 
@@ -54,27 +71,41 @@ def loadLibrary():
     jnius_config.add_options('-Xss1280k')
 
     jnius_config.add_options('-Djava.library.path=' + SiddhiCEP4.source_path + "/")
-    jnius_config.set_classpath('.', SiddhiCEP4.source_path + '/ProxyClasses/SiddhiCEP4Proxy/target/lib/*',
-                               SiddhiCEP4.source_path + '/ProxyClasses/SiddhiCEP4Proxy/target/*')
 
+    # Determine library class path
+    class_paths = ['.', SiddhiCEP4.source_path + '/ProxyClasses/SiddhiCEP4Proxy/target/lib/*',SiddhiCEP4.source_path + '/ProxyClasses/SiddhiCEP4Proxy/target/*']
+
+    # Add Extensions
+    if not "extensions" in globals():
+        global extensions
+        extensions = []
+
+    for extension in extensions:
+        class_paths.append(extension)
+
+    jnius_config.set_classpath(*(tuple(class_paths)))
+
+    # Mark API configured
     global siddhi_api_configured
     siddhi_api_configured = 4
 
     logging.info("Classpath Configured")
 
-    # Start JVM
+    # Load Pyjnius (Starts JVM)
     from jnius import autoclass, java_method, PythonJavaClass, JavaClass
 
-    # Retrieve access
+    # Generate references and store in backup
     global t_siddhi_api_core, t_siddhi_api_core_inst, t_java_method, t_PythonJavaClass, t_JavaClass
     t_siddhi_api_core = autoclass("org.wso2.siddhi.pythonapi.proxy.core.SiddhiAPICoreProxy")
     t_siddhi_api_core_inst = t_siddhi_api_core(sys.version_info[0], sys.version_info[1])
     t_java_method = java_method
     t_PythonJavaClass = PythonJavaClass
     t_JavaClass = JavaClass
-    resumeLibrary()
 
-def loadType(type_name):
+    #Resume references stored in backup
+    _resumeLibrary()
+
+def _loadType(type_name):
     loadLibrary()
     from jnius import autoclass
     return autoclass(type_name)

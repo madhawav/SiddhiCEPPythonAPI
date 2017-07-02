@@ -10,7 +10,7 @@ from SiddhiCEP4.core.event.Event import Event
 
 from future.utils import with_metaclass
 
-_query_callback_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.QueryCallbackProxy")
+_query_callback_proxy = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.query.output.callback.query_callback.QueryCallbackProxy")
 #_lock = Lock()
 
 _created_instances = [] #Hold references to prevent python from GCing Callbacks until Java does

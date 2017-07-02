@@ -4,7 +4,7 @@ from SiddhiCEP4 import SiddhiLoader
 from SiddhiCEP4.DataTypes.DataWrapper import wrapData
 from SiddhiCEP4.DataTypes.LongType import LongType
 
-input_handler_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.stream.input.input_handler.InputHandlerProxy")
+input_handler_proxy = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.stream.input.input_handler.InputHandlerProxy")
 class InputHandler(object):
     def __init__(self):
         raise NotImplementedError("Initialize InputHandler using SiddhiAppRuntime")
