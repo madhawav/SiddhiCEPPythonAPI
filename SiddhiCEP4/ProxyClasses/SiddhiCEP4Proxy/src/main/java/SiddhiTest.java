@@ -238,7 +238,7 @@ public class SiddhiTest {
             public void receive(long timeStamp, Event[] inEvents, Event[] removeEvents) {
                 EventPrinter.print(timeStamp, inEvents, removeEvents);
                 for (Event inEvent : inEvents) {
-                    System.out.println(inEvent);
+                    log.info(inEvent);
                 }
             }
         });

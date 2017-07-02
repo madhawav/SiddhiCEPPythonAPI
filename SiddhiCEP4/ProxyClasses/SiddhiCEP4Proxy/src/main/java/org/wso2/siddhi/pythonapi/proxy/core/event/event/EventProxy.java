@@ -19,7 +19,6 @@ public class EventProxy {
 
     public DataWrapProxy getDataItem(Event target,int index){
         Object data = target.getData(index);
-        System.out.println("Data" + data);
         return DataWrapProxy.wrap(data);
     }
 
