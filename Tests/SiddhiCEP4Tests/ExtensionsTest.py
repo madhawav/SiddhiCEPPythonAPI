@@ -34,6 +34,117 @@ class TestExtensions(TestCase):
         self.eventArrived = False
         self.count = AtomicInt(0)
 
+    def testMathRandomFunctionWithSeed(self):
+        logging.info("RandomFunctionExtension TestCase, with seed")
+
+        # Creating SiddhiManager
+        siddhiManager = SiddhiManager()
+
+        # Creating Query
+        streamDefinition = "define stream inputStream (symbol string, price long, volume long);"
+        query ="@info(name = 'query1') from inputStream select symbol , math:rand(12) as randNumber " + \
+            "insert into outputStream;"
+
+
+        # Setting up Siddhi App
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streamDefinition + query)
+
+        # Setting up callback
+        _self_shaddow = self
+
+        class ConcreteQueryCallback(QueryCallback):
+            def receive(self, timestamp, inEvents, outEvents):
+                PrintEvent(timestamp, inEvents, outEvents)
+                _self_shaddow.count.addAndGet(len(inEvents))
+                _self_shaddow.eventArrived = True
+                if len(inEvents) == 3:
+                    randNumbers = [0,0,0]
+                    randNumbers[0] = inEvents[0].getData(1)
+                    randNumbers[1] = inEvents[1].getData(1)
+                    randNumbers[2] = inEvents[2].getData(1)
+                    isDuplicatePresent = False
+
+                    logging.info(randNumbers[0] + ", " + randNumbers[1])
+
+                    if randNumbers[0] == randNumbers[1] or randNumbers[0] == randNumbers[2] or randNumbers[1] == randNumbers[2]:
+                        isDuplicatePresent = True
+
+                    _self_shaddow.assertEquals(False, isDuplicatePresent)
+
+
+
+        siddhiAppRuntime.addCallback("query1", ConcreteQueryCallback())
+
+        # Retrieving input handler to push events into Siddhi
+        inputHandler = siddhiAppRuntime.getInputHandler("inputStream")
+        # Starting event processing
+        siddhiAppRuntime.start()
+
+        # Sending events to Siddhi
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["XYZ", 60.5, LongType(200)])
+        sleep(0.5)
+
+        self.assertEqual(self.count.get(), 3)
+        self.assertTrue(self.eventArrived)
+
+        siddhiManager.shutdown()
+
+    def testMathRandomFunctionWithoutSeed(self):
+        logging.info("RandomFunctionExtension TestCase, without seed")
+
+        # Creating SiddhiManager
+        siddhiManager = SiddhiManager()
+
+        # Creating Query
+        streamDefinition = "define stream inputStream (symbol string, price long, volume long);"
+        query ="@info(name = 'query1') from inputStream select symbol , math:rand() as randNumber " + \
+            "insert into outputStream;"
+
+
+        # Setting up Siddhi App
+        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streamDefinition + query)
+
+        # Setting up callback
+        _self_shaddow = self
+
+        class ConcreteQueryCallback(QueryCallback):
+            def receive(self, timestamp, inEvents, outEvents):
+                PrintEvent(timestamp, inEvents, outEvents)
+                _self_shaddow.count.addAndGet(len(inEvents))
+                _self_shaddow.eventArrived = True
+                if len(inEvents) == 3:
+                    randNumbers = [0,0,0]
+                    randNumbers[0] = inEvents[0].getData(1)
+                    randNumbers[1] = inEvents[1].getData(1)
+                    randNumbers[2] = inEvents[2].getData(1)
+                    isDuplicatePresent = False
+                    if randNumbers[0] == randNumbers[1] or randNumbers[0] == randNumbers[2] or randNumbers[1] == randNumbers[2]:
+                        isDuplicatePresent = True
+
+                    _self_shaddow.assertEquals(False, isDuplicatePresent)
+
+
+
+        siddhiAppRuntime.addCallback("query1", ConcreteQueryCallback())
+
+        # Retrieving input handler to push events into Siddhi
+        inputHandler = siddhiAppRuntime.getInputHandler("inputStream")
+        # Starting event processing
+        siddhiAppRuntime.start()
+
+        # Sending events to Siddhi
+        inputHandler.send(["IBM", 700.0, LongType(100)])
+        inputHandler.send(["WSO2", 60.5, LongType(200)])
+        inputHandler.send(["XYZ", 60.5, LongType(200)])
+        sleep(0.1)
+
+        self.assertEqual(self.count.get(), 3)
+        self.assertTrue(self.eventArrived)
+
+        siddhiManager.shutdown()
+
     def testStringRegexpFunction(self):
         logging.info("ContainsFunctionExtensionTestCase TestCase")
 
