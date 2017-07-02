@@ -1,12 +1,9 @@
-import SiddhiCEP3.core
-from jnius import autoclass
-
+from SiddhiCEP3 import SiddhiLoader
 from SiddhiCEP3.DataTypes import DataWrapper
-from SiddhiCEP3.DataTypes.LongType import LongType
 from SiddhiCEP3.core.event import ComplexEvent
 
-_event_class = autoclass("org.wso2.siddhi.core.event.Event")
-_event_proxy_class = autoclass("org.wso2.siddhi.pythonapi.proxy.core.event.event.EventProxy")
+_event_class = SiddhiLoader._loadType("org.wso2.siddhi.core.event.Event")
+_event_proxy_class = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.event.event.EventProxy")
 _event_proxy_class_inst = _event_proxy_class()
 
 class Event(object):

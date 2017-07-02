@@ -13,7 +13,7 @@ from SiddhiCEP3.core.stream.output.StreamCallback import StreamCallback
 from Tests.Util.AtomicInt import AtomicInt
 
 
-class TestDebugger(TestCase):
+class TestOutputStream(TestCase):
     def setUp(self):
         self.inEventCount = AtomicInt(0)
         self.debugEventCount = AtomicInt(0)

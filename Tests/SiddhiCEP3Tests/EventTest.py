@@ -11,7 +11,7 @@ from SiddhiCEP3.DataTypes.LongType import LongType
 from SiddhiCEP3.core.event.Event import Event
 
 
-class BasicTests(unittest.TestCase):
+class EventTest(unittest.TestCase):
     def test_data(self):
         logging.info("Test GetData and SetData Methods")
 

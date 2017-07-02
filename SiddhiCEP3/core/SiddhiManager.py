@@ -1,5 +1,5 @@
 import SiddhiCEP3.core
-from SiddhiCEP3.core import siddhi_api_core_inst
+from SiddhiCEP3 import SiddhiLoader
 from SiddhiCEP3.core.ExecutionPlanRuntime import ExecutionPlanRuntime
 
 class SiddhiManager(object):
@@ -7,7 +7,9 @@ class SiddhiManager(object):
         '''
         ''Initialize a new SiddhiManager
         '''
-        self._siddhi_manager_proxy =  siddhi_api_core_inst.initSiddhiManager()
+        SiddhiLoader.loadLibrary()
+        self._siddhi_manager_proxy = SiddhiLoader.siddhi_api_core_inst.initSiddhiManager()
+
     def createExecutionPlanRuntime(self,executionPlan):
         '''
         Create an Execution Plan Runtime

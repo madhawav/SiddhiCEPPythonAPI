@@ -1,6 +1,4 @@
-from jnius import PythonJavaClass, java_method
-
-from SiddhiCEP3.core import siddhi_api_core_inst
+from SiddhiCEP3 import SiddhiLoader
 from SiddhiCEP3.core.query.output.callback.QueryCallback import QueryCallback
 from SiddhiCEP3.core.stream.input.InputHandler import InputHandler
 from SiddhiCEP3.core.stream.output.StreamCallback import StreamCallback
@@ -23,9 +21,9 @@ class ExecutionPlanRuntime(object):
         :return:
         '''
         if isinstance(queryCallback, QueryCallback):
-            siddhi_api_core_inst.addExecutionPlanRuntimeQueryCallback(self.execution_plan_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
+            SiddhiLoader.siddhi_api_core_inst.addExecutionPlanRuntimeQueryCallback(self.execution_plan_runtime_proxy,queryName,queryCallback._query_callback_proxy_inst)
         elif isinstance(queryCallback, StreamCallback):
-            siddhi_api_core_inst.addExecutionPlanRuntimeStreamCallback(self.execution_plan_runtime_proxy, queryName,
+            SiddhiLoader.siddhi_api_core_inst.addExecutionPlanRuntimeStreamCallback(self.execution_plan_runtime_proxy, queryName,
                                                                  queryCallback._stream_callback_proxy)
         else:
             raise NotImplementedError("Unknown type of callback")

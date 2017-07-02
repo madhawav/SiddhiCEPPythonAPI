@@ -1,17 +1,15 @@
-import SiddhiCEP3
-
-from jnius import autoclass
 from enum import Enum
 
+from SiddhiCEP3 import SiddhiLoader
 from SiddhiCEP3.DataTypes.DataWrapper import unwrapData, wrapData
 
 
 class ComplexEvent(object):
     class Type(Enum):
-        CURRENT = autoclass("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().CURRENT(),
-        EXPIRED = autoclass("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().EXPIRED(),
-        TIMER = autoclass("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().TIMER(),
-        RESET = autoclass("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().RESET()
+        CURRENT = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().CURRENT(),
+        EXPIRED = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().EXPIRED(),
+        TIMER = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().TIMER(),
+        RESET = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")().RESET()
 
         @classmethod
         def _map_value(cls, type_proxy):
@@ -58,13 +56,13 @@ class ComplexEvent(object):
     next = property(getNext, setNext)
 
     def getOutputData(self):
-        complex_event_static_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.ComplexEventProxy")()
+        complex_event_static_proxy = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.ComplexEventProxy")()
         output_data = unwrapData(complex_event_static_proxy.getOutputData(self._complex_event_proxy))
         return output_data
 
     def setOutputData(self, datum, index):
         #TODO: Improve logic here by adding support to long. Will need to make a java wrapping for handling long
-        complex_event_static_proxy = autoclass(
+        complex_event_static_proxy = SiddhiLoader._loadType(
             "org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.ComplexEventProxy")()
         complex_event_static_proxy.setOutputData(self._complex_event_proxy,wrapData(datum),index)
 
@@ -82,7 +80,7 @@ class ComplexEvent(object):
 
     def getType(self):
         raw_type_proxy = self._complex_event_proxy.getType()
-        type_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")(raw_type_proxy)
+        type_proxy = SiddhiLoader._loadType("org.wso2.siddhi.pythonapi.proxy.core.event.complex_event.TypeProxy")(raw_type_proxy)
         return ComplexEvent.Type._map_value(type_proxy)
 
     def setType(self, type):
