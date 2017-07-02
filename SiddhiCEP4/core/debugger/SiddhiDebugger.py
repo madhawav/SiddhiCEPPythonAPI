@@ -4,12 +4,10 @@ from time import sleep
 
 import logging
 
-import SiddhiCEP4.core #Initializes Library
+from SiddhiCEP4 import SiddhiLoader
 
 from SiddhiCEP4.DataTypes.DataWrapper import unwrapHashMap
 from enum import Enum
-
-from jnius.reflect import autoclass
 
 from SiddhiCEP4.core.event.ComplexEvent import ComplexEvent
 
@@ -17,8 +15,8 @@ from SiddhiCEP4.core.event.ComplexEvent import ComplexEvent
 class SiddhiDebugger(object):
 
     class QueryTerminal(Enum):
-        IN = autoclass("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().IN()
-        OUT = autoclass("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().OUT()
+        IN = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().IN()
+        OUT = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger.QueryTerminalProxy")().OUT()
 
         @classmethod
         def _map_value(cls, queryTerminalProxy):

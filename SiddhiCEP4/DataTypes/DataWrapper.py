@@ -1,9 +1,8 @@
-import jnius
+
 
 import SiddhiCEP4
 
-from jnius import autoclass
-
+from SiddhiCEP4 import SiddhiLoader
 from SiddhiCEP4.DataTypes.LongType import LongType
 
 '''
@@ -50,7 +49,7 @@ def wrapDataItem(d):
     :param d: 
     :return: 
     '''
-    wrapped_data_proxy = autoclass("org.wso2.siddhi.pythonapi.DataWrapProxy")
+    wrapped_data_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.DataWrapProxy")
     wrapped_data = None
     if d is None:
         #Constructor for null type
@@ -90,7 +89,7 @@ def unwrapHashMap(map):
     :param map: 
     :return: 
     '''
-    if (not isinstance(map,jnius.JavaClass)) or (map.__javaclass__ != "java/util/Map" and map.__javaclass__ != "java/util/HashMap"):
+    if (not isinstance(map,SiddhiLoader._JavaClass)) or (map.__javaclass__ != "java/util/Map" and map.__javaclass__ != "java/util/HashMap"):
         return map
         # TODO: Should prevent exposure of subtypes of ComplexEvent
     results = {}

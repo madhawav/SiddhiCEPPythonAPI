@@ -4,10 +4,11 @@ import logging
 
 import SiddhiCEP4.core
 
-from jnius import autoclass, PythonJavaClass, java_method
 from future.utils import with_metaclass
 
-_siddhi_debugger_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger_callback.SiddhiDebuggerCallbackProxy")
+from SiddhiCEP4 import SiddhiLoader
+
+_siddhi_debugger_callback_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.debugger.siddhi_debugger_callback.SiddhiDebuggerCallbackProxy")
 
 class SiddhiDebuggerCallback(with_metaclass(ABCMeta,object)):
     def __init__(self):

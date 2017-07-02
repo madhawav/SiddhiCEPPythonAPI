@@ -6,13 +6,12 @@ import SiddhiCEP4.core
 
 from abc import ABCMeta, abstractmethod
 
-from jnius import autoclass, java_method, PythonJavaClass
-
+from SiddhiCEP4 import SiddhiLoader
 from SiddhiCEP4.core.event.Event import Event
 
 from future.utils import with_metaclass
 
-_stream_callback_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy")
+_stream_callback_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.stream.output.callback.stream_callback.StreamCallbackProxy")
 
 _lock = RLock()
 
@@ -28,19 +27,19 @@ class StreamCallback(with_metaclass(ABCMeta,object)):
     def __init__(self):
         self._stream_callback_proxy = _stream_callback_proxy()
         stream_callback_self = self
-        class ReceiveCallback(PythonJavaClass):
+        class ReceiveCallback(SiddhiLoader._PythonJavaClass):
             '''
             Innerclass to wrap around Java Interface
             '''
             __javainterfaces__ = ["org/wso2/siddhi/pythonapi/proxy/core/stream/output/callback/stream_callback/ReceiveCallbackProxy"]
 
-            @java_method(signature='([Lorg/wso2/siddhi/core/event/Event;)V', name="receive")
+            @SiddhiLoader._java_method(signature='([Lorg/wso2/siddhi/core/event/Event;)V', name="receive")
             def receive(self, events):
                 if events is not None:
                     events = [Event._fromEventProxy(event) for event in events]
                 stream_callback_self.receive(events)
 
-            @java_method(signature='()V', name="gc")
+            @SiddhiLoader._java_method(signature='()V', name="gc")
             def gc(self):
                 _created_instances.remove(stream_callback_self)
                 logging.info("Java Reported GC Collected Stream Callback")

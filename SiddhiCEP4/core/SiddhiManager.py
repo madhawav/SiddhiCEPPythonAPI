@@ -1,4 +1,4 @@
-from SiddhiCEP4.core import siddhi_api_core_inst
+from SiddhiCEP4 import SiddhiLoader
 from SiddhiCEP4.core.SiddhiAppRuntime import SiddhiAppRuntime
 
 
@@ -7,7 +7,8 @@ class SiddhiManager(object):
         '''
         ''Initialize a new SiddhiManager
         '''
-        self._siddhi_manager_proxy =  siddhi_api_core_inst.initSiddhiManager()
+        SiddhiLoader.loadLibrary()
+        self._siddhi_manager_proxy = SiddhiLoader.siddhi_api_core_inst.initSiddhiManager()
     def createSiddhiAppRuntime(self,siddhiApp):
         '''
         Create an Siddhi app Runtime

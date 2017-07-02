@@ -1,7 +1,6 @@
-import SiddhiCEP4.core #Initializes Runtime
-from jnius import autoclass
+from SiddhiCEP4 import SiddhiLoader
 
-_event_printer_proxy = autoclass("org.wso2.siddhi.pythonapi.proxy.core.util.EventPrinterProxy")
+_event_printer_proxy = SiddhiLoader.loadType("org.wso2.siddhi.pythonapi.proxy.core.util.EventPrinterProxy")
 
 
 def PrintEvent(timestamp, inEvents, outEvents):
