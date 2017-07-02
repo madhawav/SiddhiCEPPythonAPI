@@ -14,9 +14,10 @@ Project Goals
 Current Progress
 -----
 Currently, the project is in very early stage with discussions on the scope.
-- [x] Wrapping basic features of Siddhi CEP Core 3.1 and 4.0
-- [x] Wrapping Siddhi Debugger
-- [x] Unit Tests on Siddhi Debugger
+- [x] Basic features of Siddhi CEP Core 3.1 and 4.0
+- [x] Wrapper on Siddhi Debugger
+- [x] Support to Siddhi Extensions Loading
+- [x] Unit Tests
 
 Installing the Library from Source
 -----
