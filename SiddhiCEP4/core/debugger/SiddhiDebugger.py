@@ -1,4 +1,5 @@
 import threading
+
 from logging import log, info
 from time import sleep
 
@@ -101,6 +102,9 @@ class SiddhiDebugger(object):
 
                     sleep(0.005) #NOTE: Removing this sleep causes changing of Debug Callback to fail
                     #TODO: Investigate why removal of above sleep causes condition in above note
+
+                #Requirement of Pyjnius to call detach before destruction of a thread
+                SiddhiLoader._detachThread()
 
             if self.pollThread is not None:
                 self.pollThread.join()  # In case a previous eventPolling is ending, wait for it to end

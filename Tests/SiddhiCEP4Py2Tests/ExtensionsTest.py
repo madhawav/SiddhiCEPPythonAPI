@@ -8,7 +8,7 @@ call(["mvn", "install"], cwd=os.path.dirname(os.path.abspath(__file__)) + "/Exte
 
 # Add extensions
 extensions_path = os.path.dirname(os.path.abspath(__file__)) + "/Extensions/jars/*"
-SiddhiLoader.addExtension(extensions_path)
+SiddhiLoader.addExtensionPath(extensions_path)
 
 import unittest
 import logging

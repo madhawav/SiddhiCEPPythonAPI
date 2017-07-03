@@ -4,11 +4,13 @@ import os
 from SiddhiCEP4 import SiddhiLoader
 
 # Download extension jars
+from SiddhiCEP4.DataTypes import DataWrapper
+
 call(["mvn", "install"], cwd=os.path.dirname(os.path.abspath(__file__)) + "/Extensions")
 
 # Add extensions
 extensions_path = os.path.dirname(os.path.abspath(__file__)) + "/Extensions/jars/*"
-SiddhiLoader.addExtension(extensions_path)
+SiddhiLoader.addExtensionPath(extensions_path)
 
 import unittest
 import logging
@@ -38,6 +40,9 @@ class TestExtensions(TestCase):
         logging.info("Simple Regression TestCase")
 
         siddhiManager = SiddhiManager()
+
+        #siddhiManager.setExtension("timeseries:regress", "org.wso2.extension.siddhi.execution.timeseries.LinearRegressionStreamProcessor")
+
         inputStream = "define stream InputStream (y int, x int);"
         siddhiApp = "@info(name = 'query1') from InputStream#timeseries:regress(1, 100, 0.95, y, x) " + \
                      "select * " + \

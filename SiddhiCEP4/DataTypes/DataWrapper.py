@@ -3,6 +3,7 @@
 import SiddhiCEP4
 
 from SiddhiCEP4 import SiddhiLoader
+from SiddhiCEP4.DataTypes.DoubleType import DoubleType
 from SiddhiCEP4.DataTypes.LongType import LongType
 
 '''
@@ -19,6 +20,8 @@ def unwrapDataItem(d):
         return None
     elif d.isLong():
         return LongType(d.getData())
+    elif d.isDouble():
+        return DoubleType(d.getData())
     return d.getData()
 
 def unwrapDataList(d):
@@ -55,7 +58,10 @@ def wrapDataItem(d):
         #Constructor for null type
         wrapped_data = wrapped_data_proxy(0,False,True)
     elif type(d) is LongType:
+        #Consutrctor for Long Type
         wrapped_data = wrapped_data_proxy(d, True)
+    elif type(d) is DoubleType:
+        wrapped_data = wrapped_data_proxy(d, False,False,True)
     else:
         wrapped_data = wrapped_data_proxy(d)
     return wrapped_data

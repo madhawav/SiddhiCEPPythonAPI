@@ -4,8 +4,6 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-
-from datetime import datetime
 import time
 from time import sleep
 from unittest.case import TestCase

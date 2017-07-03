@@ -1,4 +1,5 @@
 from SiddhiCEP4 import SiddhiLoader
+from SiddhiCEP4.DataTypes import DataWrapper
 from SiddhiCEP4.core.SiddhiAppRuntime import SiddhiAppRuntime
 
 
@@ -18,6 +19,22 @@ class SiddhiManager(object):
 
         siddhi_app_runtime_proxy = self._siddhi_manager_proxy.createSiddhiAppRuntime(siddhiApp)
         return SiddhiAppRuntime._fromSiddhiAppRuntimeProxy(siddhi_app_runtime_proxy)
+
+    def getExtensions(self):
+        return DataWrapper.unwrapHashMap(self._siddhi_manager_proxy.getExtensions())
+
+    def setExtension(self, name, clazz):
+        '''
+        Loads an extension into Siddhi Manager. The Extension Path must be already added via 
+        SiddhiLoader.addExtensionPath.
+        :param name: Name of extension
+        :param clazz: Fully qualified class name of extension
+        :return: 
+        '''
+        if isinstance(clazz,str):
+            self._siddhi_manager_proxy.setExtension(name, SiddhiLoader._loadType(clazz))
+        else:
+            self._siddhi_manager_proxy.setExtension(name,clazz)
 
     def persist(self):
         '''
