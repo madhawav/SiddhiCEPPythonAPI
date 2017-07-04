@@ -12,7 +12,7 @@ _java_method = None
 _PythonJavaClass = None
 _JavaClass = None
 
-def addExtension(class_path):
+def addExtensionPath(class_path):
     '''
     Adds an Extension to Siddhi. Should be called prior to importing any Siddhi Libraries.
     :param class_path: Path to Jar File. Wild Card (*) directory selection is accepted

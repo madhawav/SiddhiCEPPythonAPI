@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 from subprocess import call
 import os
-from SiddhiCEP4 import SiddhiLoader
+from SiddhiCEP3 import SiddhiLoader
 
 # Download extension jars
 
-call(["mvn", "install"], cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/Resources/Extensions4/")
+call(["mvn", "install"], cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/Resources/Extensions3/")
 
 # Add extensions
-extensions_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/Resources/Extensions4/jars/*"
+extensions_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/Resources/Extensions3/jars/*"
 SiddhiLoader.addExtensionPath(extensions_path)
 
 import unittest
@@ -16,11 +16,10 @@ import logging
 from time import sleep
 
 
-from SiddhiCEP4.DataTypes.LongType import LongType
-from SiddhiCEP4.core.SiddhiManager import SiddhiManager
-from SiddhiCEP4.core.query.output.callback.QueryCallback import QueryCallback
-from SiddhiCEP4.core.util import EventPrinter
-from SiddhiCEP4.core.util.EventPrinter import PrintEvent
+from SiddhiCEP3.DataTypes.LongType import LongType
+from SiddhiCEP3.core.SiddhiManager import SiddhiManager
+from SiddhiCEP3.core.query.output.callback.QueryCallback import QueryCallback
+from SiddhiCEP3.core.util.EventPrinter import PrintEvent
 
 logging.basicConfig(level=logging.INFO)
 
@@ -125,14 +124,17 @@ class TestExtensions(TestCase):
         # Creating SiddhiManager
         siddhiManager = SiddhiManager()
 
+        siddhiManager.setExtension("math:rand",
+                                   "org.wso2.extension.siddhi.execution.math.RandomFunctionExtension")
+
         # Creating Query
         streamDefinition = "define stream inputStream (symbol string, price long, volume long);"
         query ="@info(name = 'query1') from inputStream select symbol , math:rand(12) as randNumber " + \
             "insert into outputStream;"
 
 
-        # Setting up Siddhi App
-        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streamDefinition + query)
+        # Setting up ExecutionPlan
+        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(streamDefinition + query)
 
         # Setting up callback
         _self_shaddow = self
@@ -158,12 +160,12 @@ class TestExtensions(TestCase):
 
 
 
-        siddhiAppRuntime.addCallback("query1", ConcreteQueryCallback())
+        executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
 
         # Retrieving input handler to push events into Siddhi
-        inputHandler = siddhiAppRuntime.getInputHandler("inputStream")
+        inputHandler = executionPlanRuntime.getInputHandler("inputStream")
         # Starting event processing
-        siddhiAppRuntime.start()
+        executionPlanRuntime.start()
 
         # Sending events to Siddhi
         inputHandler.send(["IBM", 700.0, LongType(100)])
@@ -188,8 +190,8 @@ class TestExtensions(TestCase):
             "insert into outputStream;"
 
 
-        # Setting up Siddhi App
-        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streamDefinition + query)
+        # Setting up ExecutionPlan
+        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(streamDefinition + query)
 
         # Setting up callback
         _self_shaddow = self
@@ -212,12 +214,12 @@ class TestExtensions(TestCase):
 
 
 
-        siddhiAppRuntime.addCallback("query1", ConcreteQueryCallback())
+        executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
 
         # Retrieving input handler to push events into Siddhi
-        inputHandler = siddhiAppRuntime.getInputHandler("inputStream")
+        inputHandler = executionPlanRuntime.getInputHandler("inputStream")
         # Starting event processing
-        siddhiAppRuntime.start()
+        executionPlanRuntime.start()
 
         # Sending events to Siddhi
         inputHandler.send(["IBM", 700.0, LongType(100)])
@@ -243,8 +245,8 @@ class TestExtensions(TestCase):
                 "insert into outputStream"
 
 
-        # Setting up Siddhi App
-        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streamDefinition + query)
+        # Setting up ExecutionPlan
+        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(streamDefinition + query)
 
         # Setting up callback
         _self_shaddow = self
@@ -265,12 +267,12 @@ class TestExtensions(TestCase):
 
                 _self_shaddow.eventArrived = True
 
-        siddhiAppRuntime.addCallback("query1", ConcreteQueryCallback())
+        executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
 
         # Retrieving input handler to push events into Siddhi
-        inputHandler = siddhiAppRuntime.getInputHandler("inputStream")
+        inputHandler = executionPlanRuntime.getInputHandler("inputStream")
         # Starting event processing
-        siddhiAppRuntime.start()
+        executionPlanRuntime.start()
 
         # Sending events to Siddhi
         inputHandler.send(["hello hi hello", 700.0, "^WSO2(.*)"])
@@ -296,8 +298,8 @@ class TestExtensions(TestCase):
                  "select symbol , str:contains(symbol, 'WSO2') as isContains " + \
                  "insert into outputStream;"
 
-        # Setting up Siddhi App
-        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streamDefinition + query)
+        # Setting up Execution Plan
+        executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(streamDefinition + query)
 
         # Setting up callback
         _self_shaddow = self
@@ -318,12 +320,12 @@ class TestExtensions(TestCase):
                 _self_shaddow.eventArrived = True
 
 
-        siddhiAppRuntime.addCallback("query1", ConcreteQueryCallback())
+        executionPlanRuntime.addCallback("query1", ConcreteQueryCallback())
 
         # Retrieving input handler to push events into Siddhi
-        inputHandler = siddhiAppRuntime.getInputHandler("inputStream")
+        inputHandler = executionPlanRuntime.getInputHandler("inputStream")
         # Starting event processing
-        siddhiAppRuntime.start()
+        executionPlanRuntime.start()
 
         # Sending events to Siddhi
         inputHandler.send(["IBM", 700.0, LongType(100)])
