@@ -21,6 +21,10 @@ class SiddhiManager(object):
         return SiddhiAppRuntime._fromSiddhiAppRuntimeProxy(siddhi_app_runtime_proxy)
 
     def getExtensions(self):
+        '''
+        Obtain the dictionary of loaded extensions
+        :return: 
+        '''
         return DataWrapper.unwrapHashMap(self._siddhi_manager_proxy.getExtensions())
 
     def setExtension(self, name, clazz):

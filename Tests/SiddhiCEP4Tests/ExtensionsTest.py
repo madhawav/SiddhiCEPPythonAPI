@@ -41,7 +41,7 @@ class TestExtensions(TestCase):
 
         siddhiManager = SiddhiManager()
 
-        #siddhiManager.setExtension("timeseries:regress", "org.wso2.extension.siddhi.execution.timeseries.LinearRegressionStreamProcessor")
+        siddhiManager.setExtension("timeseries:regress", "org.wso2.extension.siddhi.execution.timeseries.LinearRegressionStreamProcessor")
 
         inputStream = "define stream InputStream (y int, x int);"
         siddhiApp = "@info(name = 'query1') from InputStream#timeseries:regress(1, 100, 0.95, y, x) " + \
