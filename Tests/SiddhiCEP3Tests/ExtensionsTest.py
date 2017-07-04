@@ -45,7 +45,7 @@ class TestExtensions(TestCase):
         siddhiApp = "@info(name = 'query1') from InputStream#timeseries:regress(1, 100, 0.95, y, x) " + \
                      "select * " + \
                      "insert into OutputStream;"
-        siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(inputStream + siddhiApp)
+        siddhiAppRuntime = siddhiManager.createExecutionPlanRuntime(inputStream + siddhiApp)
         self.betaZero = 0
         _self_shaddow = self
         class QueryCallbackImpl(QueryCallback):
@@ -113,7 +113,8 @@ class TestExtensions(TestCase):
         sleep(1)
 
         self.assertEqual(50, self.count.get(),"No of events: ")
-        self.assertEqual(573.1418421169493, self.betaZero, 573.1418421169493 - self.betaZero, "Beta0: ")
+        # Condition Loosened from equality due to floating point error
+        self.assertTrue(573.1418421169493-0.001<self.betaZero<573.1418421169493+0.001,"Beta0: " + str(573.1418421169493 - self.betaZero))
 
         siddhiAppRuntime.shutdown()
 

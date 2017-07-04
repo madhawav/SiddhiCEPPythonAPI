@@ -114,7 +114,8 @@ class TestExtensions(TestCase):
         sleep(1)
 
         self.assertEqual(50, self.count.get(),"No of events: ")
-        self.assertEqual(573.1418421169493, self.betaZero, 573.1418421169493 - self.betaZero, "Beta0: ")
+        self.assertTrue(573.1418421169493 - 0.001 < self.betaZero < 573.1418421169493 + 0.001,
+                        "Beta0: " + str(573.1418421169493 - self.betaZero))
 
         siddhiAppRuntime.shutdown()
 

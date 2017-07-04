@@ -1,5 +1,9 @@
 package org.wso2.siddhi.pythonapi;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
+import java.util.logging.Logger;
+
 /**
  * Created by madhawa on 6/1/17.
  */
@@ -9,8 +13,16 @@ public class DataWrapProxy {
      * - Python doesnt support long datatype
      * - Pyjnius require uniform data type objects in arrays
      */
+    /**
+     * Note: The approach taken here causes loss of precision in Double and Loss of range in Long.
+     * TODO: Look for a better implementation of Double and Long, without loss of precision and range
+     */
     private Object data;
     public DataWrapProxy(int data)
+    {
+        this.data = data;
+    }
+    public DataWrapProxy(boolean data)
     {
         this.data = data;
     }
@@ -35,17 +47,31 @@ public class DataWrapProxy {
         }
     }
 
+    public DataWrapProxy(float data, boolean isLong, boolean isNull, boolean isDouble)
+    {
+        if(isDouble)
+        {
+            this.data = (double)data;
+        }
+    }
+
     public boolean isNull(){
         return this.data == null;
     }
     public boolean isLong(){
         return this.data instanceof Long;
     }
+    public boolean isDouble(){
+        return this.data instanceof Double;
+    }
     public boolean isInt(){
         return this.data instanceof Integer;
     }
     public boolean isFloat(){
         return this.data instanceof Float;
+    }
+    public boolean isBoolean(){
+        return this.data instanceof Boolean;
     }
     public boolean isString(){
         return this.data instanceof String;
@@ -76,6 +102,12 @@ public class DataWrapProxy {
             return new DataWrapProxy((String)data);
         else if(data instanceof Float)
             return new DataWrapProxy((Float)data);
+        else if(data instanceof Boolean)
+            return new DataWrapProxy((Boolean)data);
+        else if(data instanceof Double)
+            return new DataWrapProxy((float)(double)(Double)data,false,false,true);
+
+        Logger.getLogger(DataWrapProxy.class.getName()).info("Unsupported Data Type: " +  data.getClass().toString());
         throw new RuntimeException("Unsupported Data Type");
     }
 
