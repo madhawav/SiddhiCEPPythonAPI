@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.wso2.extension.siddhi.execution.timeseries</groupId>
             <artifactId>siddhi-execution-timeseries</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <version>4.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
