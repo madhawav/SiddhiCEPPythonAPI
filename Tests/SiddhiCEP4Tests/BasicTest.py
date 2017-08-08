@@ -7,7 +7,6 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-from multiprocessing import Lock
 from time import sleep
 
 from SiddhiCEP4.DataTypes.LongType import LongType

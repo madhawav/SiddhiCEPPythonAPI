@@ -14,17 +14,17 @@
         <dependency>
             <groupId>org.wso2.extension.siddhi.execution.string</groupId>
             <artifactId>siddhi-execution-string</artifactId>
-            <version>4.0.1-SNAPSHOT</version>
+            <version>4.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.extension.siddhi.execution.math</groupId>
             <artifactId>siddhi-execution-math</artifactId>
-            <version>4.0.1-SNAPSHOT</version>
+            <version>4.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.extension.siddhi.execution.timeseries</groupId>
             <artifactId>siddhi-execution-timeseries</artifactId>
-            <version>4.0.1-SNAPSHOT</version>
+            <version>4.0.1</version>
         </dependency>
 
         <dependency>
