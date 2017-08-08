@@ -25,6 +25,7 @@ Installing the Library from Source
     - Python 2.7 or 3.x
     - Cython (`sudo apt-get install cython`)
     - Pyjnius (`sudo pip install pyjnius`)
+    - Future (`sudo pip install future`)
     - Python Developer Package (`sudo apt-get install python-dev python3-dev python-dev`)
     - libboost for Python (`sudo apt-get install libboost-python-dev`)
     - Maven and Java 8
