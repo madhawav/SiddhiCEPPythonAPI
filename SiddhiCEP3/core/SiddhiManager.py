@@ -35,12 +35,6 @@ class SiddhiManager(object):
         '''
         self._siddhi_manager_proxy.restoreLastState()
 
-    def getExtensions(self):
-        '''
-        Obtain the dictionary of loaded extensions
-        :return: 
-        '''
-        return DataWrapper.unwrapHashMap(self._siddhi_manager_proxy.getExtensions())
 
     def setExtension(self, name, clazz):
         '''
